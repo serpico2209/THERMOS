@@ -19,6 +19,7 @@
  *******************************************************************************/
 package org.eclipse.om2m.ipe.sample;
 //Test push serveur
+// Test MB
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.om2m.core.service.CseService;
