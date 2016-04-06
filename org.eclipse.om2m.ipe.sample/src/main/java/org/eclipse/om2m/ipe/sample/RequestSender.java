@@ -32,7 +32,7 @@ import org.eclipse.om2m.commons.resource.RequestPrimitive;
 import org.eclipse.om2m.commons.resource.Resource;
 import org.eclipse.om2m.commons.resource.ResponsePrimitive;
 import org.eclipse.om2m.ipe.sample.controller.SampleController;
-
+//reception
 public class RequestSender {
 	
 	/**
