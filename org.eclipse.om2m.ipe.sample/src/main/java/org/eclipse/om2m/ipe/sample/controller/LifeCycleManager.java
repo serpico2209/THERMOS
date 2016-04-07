@@ -64,7 +64,6 @@ public class LifeCycleManager {
 		if(SampleConstants.GUI){
 			GUI.init();
 		}
-
 	}
 
 	/**

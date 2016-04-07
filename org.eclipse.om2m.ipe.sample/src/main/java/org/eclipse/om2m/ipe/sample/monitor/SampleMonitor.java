@@ -42,5 +42,4 @@ public class SampleMonitor {
 	public static void switchAll(){
 		SampleController.toogleAll();
 	}
-
 }
