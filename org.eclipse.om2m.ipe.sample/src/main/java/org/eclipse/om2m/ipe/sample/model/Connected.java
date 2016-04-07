@@ -1,7 +1,7 @@
 package org.eclipse.om2m.ipe.sample.model;
 
 public abstract class Connected {
-
+	
 	public final static String LOCATION = "Home";
 	public final static String TYPE = "CONNECTED";
 	protected String connectedId;
