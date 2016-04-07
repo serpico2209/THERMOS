@@ -10,17 +10,54 @@ import org.eclipse.om2m.commons.exceptions.BadRequestException;
 
 public class ThermosModel {
 
+	//Paramètres liés au statut du système de régulation de température
+	private static int tempConsigne = 27;
+	private static boolean stateSystem= true;
+	private static ConnectedState profilUser= ConnectedState.Eco;
+	
 	private static Map<String,Connected> CONNECTED = new HashMap<String, Connected>();
 	private static List<ConnectedObserver> OBSERVERS = new ArrayList<ConnectedObserver>();
 	
 	public ThermosModel() {
 		// TODO Auto-generated constructor stub
 	}
+	
+	/**
+	 * @param ConnectedId 
+	 * @param newTemp Nouvelle température à setter
+	 * 
+	 * get l'object par son ID, vérifie que l'objet en question est bien un thermomètre
+	 * puis set une nouvelle température
+	 */
+	public static void modifyTemperature(final String ConnectedId,int newTemp){
+		checkConnectedIdValue(ConnectedId);
+		if(CONNECTED.get(ConnectedId) instanceof Thermometer){
+			((Thermometer)CONNECTED.get(ConnectedId)).setTemperature(newTemp);
+		}
+	}
+	
+	public static int getTemperatureInterne(){
+		return ((Thermometer)CONNECTED.get(Thermometer.TYPE+"_Int")).getTemperature();
+	}
+	
+	public static int getTemperatureExterne(){
+		return ((Thermometer)CONNECTED.get(Thermometer.TYPE+"_Ext")).getTemperature();
+	}
 
 	public static void setConnectedState(final String ConnectedId, ConnectedState state) {
 		checkConnectedIdValue(ConnectedId);
 		CONNECTED.get(ConnectedId).setState(state);
 		notifyObservers(ConnectedId, state);
+	}
+	
+	public static double getCoefUser(){
+		if(profilUser.equals(ConnectedState.Eco))return (1/3);
+		return (2/3);
+	}
+	
+	public static double getIntervalleTolerance(){
+		if(profilUser.equals(ConnectedState.Eco))return 1;
+		return 0.5;
 	}
 	
 	public static ConnectedState getConnectedState(String ConnectedId) {
@@ -63,5 +100,55 @@ public class ThermosModel {
 
 	public static void setModel(Map<String, Connected> connected) {
 		CONNECTED = connected;
+	}
+
+	/**
+	 * @return the tempconsigne
+	 */
+	public static int getTempconsigne() {
+		return tempConsigne;
+	}
+
+	/**
+	 * @return the statesystem
+	 */
+	public static boolean isSystemActivate() {
+		return stateSystem;
+	}
+
+	/**
+	 * @return the profiluser
+	 */
+	public static ConnectedState getProfiluser() {
+		return profilUser;
+	}
+
+	/**
+	 * @param tempconsigne the tempconsigne to set
+	 */
+	public static void setTempconsigne(int tempconsigne) {
+		tempConsigne = tempconsigne;
+	}
+
+	/**
+	 * @param statesystem the statesystem to set
+	 */
+	public static void setStatesystem(boolean statesystem) {
+		stateSystem = statesystem;
+	}
+
+	/**
+	 * @param profiluser the profiluser to set
+	 */
+	public static void setProfiluser(ConnectedState profiluser) {
+		profilUser = profiluser;
+	}
+	
+	/**
+	 * @return indique si la fenêtre est ouverte
+	 */
+	public static boolean isWindowOpen(){
+		if((getConnectedState(Window.TYPE+"_"+1).equals(ConnectedState.Open))) return true;
+		return false;
 	}
 }

@@ -12,5 +12,8 @@ public enum ConnectedState {
 	Outside,
 	
 	Activated,
-	Disabled
+	Disabled,
+	
+	Confort,
+	Eco
 }
