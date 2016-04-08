@@ -1,22 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2013-2016 LAAS-CNRS (www.laas.fr)
- * 7 Colonel Roche 31077 Toulouse - France
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Initial Contributors:
- *     Thierry Monteil : Project manager, technical co-manager
- *     Mahdi Ben Alaya : Technical co-manager
- *     Samir Medjiah : Technical co-manager
- *     Khalil Drira : Strategy expert
- *     Guillaume Garzone : Developer
- *     François Aïssaoui : Developer
- *
- * New contributors :
- *******************************************************************************/
 package org.eclipse.om2m.ipe.sample;
 
 import org.apache.commons.logging.Log;
@@ -28,12 +9,12 @@ import org.eclipse.om2m.commons.resource.RequestPrimitive;
 import org.eclipse.om2m.commons.resource.ResponsePrimitive;
 import org.eclipse.om2m.interworking.service.InterworkingService;
 import org.eclipse.om2m.ipe.sample.constants.Operations;
-import org.eclipse.om2m.ipe.sample.constants.SampleConstants;
-import org.eclipse.om2m.ipe.sample.controller.SampleController;
+import org.eclipse.om2m.ipe.sample.constants.ThermosConstants;
+import org.eclipse.om2m.ipe.sample.controller.ThermosController;
+import org.eclipse.om2m.ipe.sample.model.ConnectedState;
 
-public class SampleRouter implements InterworkingService{
-
-	private static Log LOGGER = LogFactory.getLog(SampleRouter.class);
+public class ThermosRouter implements InterworkingService{ 
+	private static Log LOGGER = LogFactory.getLog(ThermosRouter.class);
 
 	@Override
 	public ResponsePrimitive doExecute(RequestPrimitive request) {
@@ -41,41 +22,53 @@ public class SampleRouter implements InterworkingService{
 		if(request.getQueryStrings().containsKey("op")){
 			String operation = request.getQueryStrings().get("op").get(0);
 			Operations op = Operations.getOperationFromString(operation);
-			String lampid= null;
-			if(request.getQueryStrings().containsKey("lampid")){
-				lampid = request.getQueryStrings().get("lampid").get(0);
+			String connectedId= null;
+			if(request.getQueryStrings().containsKey("connectedid")){
+				connectedId = request.getQueryStrings().get("connectedid").get(0);
 			}
-			LOGGER.info("Received request in Sample IPE: op=" + operation + " ; lampid=" + lampid);
+			LOGGER.info("Received request in Sample IPE: op=" + operation + " ; connectedid=" + connectedId);
 			switch(op){
-			case SET_ON:
-				SampleController.setLampState(lampid, true);
+			case SET_STRONG:
+				ThermosController.setConnectedState(connectedId, ConnectedState.Strong);
 				response.setResponseStatusCode(ResponseStatusCode.OK);
 				break;
 			case SET_OFF:
-				SampleController.setLampState(lampid, false);
+				ThermosController.setConnectedState(connectedId, ConnectedState.Off);
 				response.setResponseStatusCode(ResponseStatusCode.OK);
 				break;
-			case TOGGLE:
-				SampleController.toggleLamp(lampid);
+			case SET_LOW:
+				ThermosController.setConnectedState(connectedId, ConnectedState.Low);
 				response.setResponseStatusCode(ResponseStatusCode.OK);
 				break;
-			case ALL_ON:
-				SampleController.setAllOn();
+			case OPEN:
+				ThermosController.setConnectedState(connectedId, ConnectedState.Open);
 				response.setResponseStatusCode(ResponseStatusCode.OK);
 				break;
-			case ALL_OFF:
-				SampleController.setAllOff();
+			case CLOSE:
+				ThermosController.setConnectedState(connectedId, ConnectedState.Closed);
 				response.setResponseStatusCode(ResponseStatusCode.OK);
 				break;
-			case ALL_TOGGLE:
-				SampleController.toogleAll();
+			case SET_INSIDE:
+				ThermosController.setConnectedState(connectedId, ConnectedState.Inside);
+            	response.setResponseStatusCode(ResponseStatusCode.OK);
+            	break;
+			case SET_OUTSIDE:
+				ThermosController.setConnectedState(connectedId, ConnectedState.Outside);
+            	response.setResponseStatusCode(ResponseStatusCode.OK);
+            	break;
+			case ACTIVATE:
+				ThermosController.toggleProfilUser(ConnectedState.Activated);
+            	response.setResponseStatusCode(ResponseStatusCode.OK);
+            	break;
+			case DISABLE:
+				ThermosController.toggleProfilUser(ConnectedState.Disabled);
             	response.setResponseStatusCode(ResponseStatusCode.OK);
             	break;
 			case GET_STATE:
 				// Shall not get there...
 				throw new BadRequestException();
 			case GET_STATE_DIRECT:
-				String content = SampleController.getFormatedLampState(lampid);
+				String content = ThermosController.getFormatedLampState(connectedId);
 				response.setContent(content);
 				request.setReturnContentType(MimeMediaType.OBIX);
 				response.setResponseStatusCode(ResponseStatusCode.OK);
@@ -92,7 +85,6 @@ public class SampleRouter implements InterworkingService{
 
 	@Override
 	public String getAPOCPath() {
-		return SampleConstants.POA;
+		return ThermosConstants.POA;
 	}
-	
 }

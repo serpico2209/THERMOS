@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.om2m.commons.exceptions.BadRequestException;
+import org.eclipse.om2m.ipe.sample.constants.ThermosConstants;
 
 
 public class ThermosModel {
@@ -37,11 +38,11 @@ public class ThermosModel {
 	}
 	
 	public static int getTemperatureInterne(){
-		return ((Thermometer)CONNECTED.get(Thermometer.TYPE+"_Int")).getTemperature();
+		return ((Thermometer)CONNECTED.get(ThermosConstants.THERMOMETER_INT)).getTemperature();
 	}
 	
 	public static int getTemperatureExterne(){
-		return ((Thermometer)CONNECTED.get(Thermometer.TYPE+"_Ext")).getTemperature();
+		return ((Thermometer)CONNECTED.get(ThermosConstants.THERMOMETER_EXT)).getTemperature();
 	}
 
 	public static void setConnectedState(final String ConnectedId, ConnectedState state) {
@@ -148,7 +149,7 @@ public class ThermosModel {
 	 * @return indique si la fenêtre est ouverte
 	 */
 	public static boolean isWindowOpen(){
-		if((getConnectedState(Window.TYPE+"_"+1).equals(ConnectedState.Open))) return true;
+		if((getConnectedState(ThermosConstants.WINDOW_1).equals(ConnectedState.Open))) return true;
 		return false;
 	}
 }

@@ -49,19 +49,19 @@ public class LifeCycleManager {
 		
 		String radiatorId = Radiator.TYPE+"_"+1;
 		connected.put(radiatorId, new Radiator(radiatorId));
-		createConnectedResources(radiatorId, false, ThermosConstants.POA);
+		createConnectedResources(radiatorId, ConnectedState.Off, ThermosConstants.POA);
 		
 		String windowId = Window.TYPE+"_"+1;
 		connected.put(windowId, new Window(windowId));
-		createConnectedResources(windowId, false, ThermosConstants.POA);
+		createConnectedResources(windowId, ConnectedState.Closed, ThermosConstants.POA);
 		
 		String thermometerIntId = Thermometer.TYPE+"_Int";
 		connected.put(thermometerIntId, new Thermometer(thermometerIntId, ConnectedState.Inside));
-		createConnectedResources(thermometerIntId, false, ThermosConstants.POA);
+		createConnectedResources(thermometerIntId, ConnectedState.Inside, ThermosConstants.POA);
 		
 		String thermometerExtId = Thermometer.TYPE+"_Ext";
 		connected.put(thermometerExtId, new Thermometer(thermometerExtId, ConnectedState.Outside));
-		createConnectedResources(thermometerExtId, false, ThermosConstants.POA);
+		createConnectedResources(thermometerExtId, ConnectedState.Outside, ThermosConstants.POA);
 		
 		ThermosModel.setModel(connected);
 
@@ -82,7 +82,13 @@ public class LifeCycleManager {
 		}
 	}
 
-	private static void createConnectedResources(String appId, boolean initValue, String poa) {
+	/**
+	 * Creates all required resources.
+	 * @param appId - Application ID
+	 * @param initValue - initial lamp value
+	 * @param poa - lamp Point of Access
+	 */
+	private static void createConnectedResources(String appId, ConnectedState initValue, String poa) {
 		// Create the Application resource
 		Container container = new Container();
 		container.getLabels().add("connected");

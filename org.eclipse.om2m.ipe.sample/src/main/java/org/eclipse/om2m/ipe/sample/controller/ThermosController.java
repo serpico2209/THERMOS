@@ -25,6 +25,10 @@ public class ThermosController {
 		RequestSender.createContentInstance(targetID, null, cin);
 	}
 	
+	public static ConnectedState getConnectedState(String connectedId){
+		return ThermosModel.getConnectedState(connectedId);
+	}
+	
 	public static void toggleRadiatorState(String connectedId, ConnectedState state){
 		if(ThermosModel.isSystemActivate() && !ThermosModel.isWindowOpen()){
 			setConnectedState(connectedId,state);
@@ -68,5 +72,13 @@ public class ThermosController {
 				toggleRadiatorState(Radiator.TYPE+"_"+1,ConnectedState.Off);
 			}
 		}
-	}	
+	}
+	
+	public static String getFormatedLampState(String lampId){
+		return ObixUtil.getStateRep(lampId, getConnectedState(lampId));
+	}
+	
+	public static void setCse(CseService cse){
+		CSE = cse;
+	}
 }

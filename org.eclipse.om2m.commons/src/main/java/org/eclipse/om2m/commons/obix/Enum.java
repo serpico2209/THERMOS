@@ -60,6 +60,11 @@ public class Enum extends Obj{
     protected Boolean _null;
     
     public Enum(){}
+    
+    public Enum(String name,String val){
+    	this.name = name;
+    	this.val = val;
+    }
 	/**
 	 * @return the val
 	 */

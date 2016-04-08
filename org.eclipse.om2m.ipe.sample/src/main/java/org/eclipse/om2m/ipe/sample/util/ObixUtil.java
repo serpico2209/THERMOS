@@ -26,6 +26,7 @@ import org.eclipse.om2m.commons.obix.Contract;
 import org.eclipse.om2m.commons.obix.Obj;
 import org.eclipse.om2m.commons.obix.Op;
 import org.eclipse.om2m.commons.obix.Str;
+import org.eclipse.om2m.commons.obix.Enum;
 import org.eclipse.om2m.commons.obix.Uri;
 import org.eclipse.om2m.commons.obix.io.ObixEncoder;
 import org.eclipse.om2m.ipe.sample.constants.Operations;
@@ -124,7 +125,7 @@ public class ObixUtil {
 		obj.add(new Str("type",Connected.TYPE));
 		obj.add(new Str("location",Connected.LOCATION));
 		obj.add(new Str("connectedId",connectedId));
-		obj.add(new Str("state",value.toString()));
+		obj.add(new Enum("state",value.toString()));
 		return ObixEncoder.toString(obj);
 	}
 
