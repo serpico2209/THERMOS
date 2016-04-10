@@ -76,14 +76,14 @@ public class GUI extends JFrame {
     static String THERMOMETER_INT = "THERMOMETER_INT";
     
 	/*Les différentes images liées aux états des ressources*/
-	static ImageIcon Radiator_Low = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/RadiateurOuvert"));
-	static ImageIcon Radiator_Close = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/RadiateurFermer"));
-	static ImageIcon Radiator_Strong = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/RadiateurFort"));
-	static ImageIcon Thermometer = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/thermometer"));
-	static ImageIcon Window_Open = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/fenetreOuvert"));
-	static ImageIcon Window_Close = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/fenetreFermer"));
-	static ImageIcon State_On = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/Btn_ON"));
-	static ImageIcon State_Off = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/Btn_OFF"));	
+	static ImageIcon Radiator_Low = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/RadiateurOuvert.jpg"));
+	static ImageIcon Radiator_Close = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/RadiateurFermer.jpg"));
+	static ImageIcon Radiator_Strong = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/RadiateurFort.jpg"));
+	static ImageIcon Thermometer = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/thermometer.jpg"));
+	static ImageIcon Window_Open = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/fenetreOuvert.png"));
+	static ImageIcon Window_Close = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/fenetreFermer.png"));
+	static ImageIcon State_On = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/Btn_ON.png"));
+	static ImageIcon State_Off = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/Btn_OFF.png"));	
 	
 			
 		
