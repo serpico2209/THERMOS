@@ -246,13 +246,13 @@ public class GUI extends JFrame {
 		        });	        
 		        jButtonAugmenterTE.addActionListener(new java.awt.event.ActionListener() {
 		            public void actionPerformed(java.awt.event.ActionEvent evt) {
-		                jButtonAugmenterTEActionPerformed(evt);
+		            	modificationTempExterne(evt);
 		            }
 		        });
 		        jButtonDiminuerTE.setLabel("-");		        
 		        jButtonDiminuerTE.addActionListener(new java.awt.event.ActionListener() {
 		            public void actionPerformed(java.awt.event.ActionEvent evt) {
-		                jButtonDiminuerTEActionPerformed(evt);
+		            	modificationTempExterne(evt);
 		            }
 		        });
 		        GroupLayout panel_Thermometer_ExtLayout = new GroupLayout(panel_Thermometer_Ext);
@@ -300,14 +300,14 @@ public class GUI extends JFrame {
 		        jButtonAugmenterTi.setLabel("+");
 		        jButtonAugmenterTi.addActionListener(new java.awt.event.ActionListener() {
 		            public void actionPerformed(java.awt.event.ActionEvent evt) {
-		                jButtonAugmenterTiActionPerformed(evt);
+		            	modificationTempInterne(evt);
 		            }
 		        });
 
 		        jButtonDiminuerTi.setLabel("-");
 		        jButtonDiminuerTi.addActionListener(new java.awt.event.ActionListener() {
 		            public void actionPerformed(java.awt.event.ActionEvent evt) {
-		                jButtonDiminuerTiActionPerformed(evt);
+		            	modificationTempInterne(evt);
 		            }
 		        });
 		        GroupLayout panel_Thermometer_IntLayout = new GroupLayout(panel_Thermometer_Int);
@@ -357,7 +357,7 @@ public class GUI extends JFrame {
 		        jButtonAugmenterTC.setText("+");
 		        jButtonAugmenterTC.addActionListener(new java.awt.event.ActionListener() {
 		            public void actionPerformed(java.awt.event.ActionEvent evt) {
-		                jButtonAugmenterTCActionPerformed(evt);
+		                modificationTempConsigne(evt);
 		            }
 		        });
 		        jButtonDiminuerTC.setText("-");
@@ -366,7 +366,7 @@ public class GUI extends JFrame {
 		        jButtonDiminuerTC.setPreferredSize(new java.awt.Dimension(41, 23));
 		        jButtonDiminuerTC.addActionListener(new java.awt.event.ActionListener() {
 		            public void actionPerformed(java.awt.event.ActionEvent evt) {
-		                jButtonDiminuerTCActionPerformed(evt);
+		            	modificationTempConsigne(evt);
 		            }
 		        });
 		        GroupLayout panelTemperatureConsigneLayout = new GroupLayout(panelTemperatureConsigne);
@@ -503,42 +503,36 @@ public class GUI extends JFrame {
 			 * le service de régulation change d'état
 			 */
 		    
-		    /* Evenement : Augmentation de la temperature interne*/
-		    private void jButtonAugmenterTiActionPerformed(java.awt.event.ActionEvent evt) {                                                   
+		    /* Evenement : Modification de la temperature interne*/
+		    private void modificationTempInterne(java.awt.event.ActionEvent evt) {                                                   
 		        // TODO add your handling code here:
 		         if(evt.getSource() == jButtonAugmenterTi) {
-		        	// jTextThermoIn.setText(String.valueOf(++temp_interne));
-		        	 ThermosController.toggleThermometer(ThermosConstants.THERMOMETER_INT, temp_interne);
+		        	 jTextThermoIn.setText(String.valueOf(++temp_interne));
+		         }else if(evt.getSource() == jButtonDiminuerTi){
+			        	jTextThermoIn.setText(String.valueOf(--temp_interne));
 		         }
-		    }  
-		    
-		    /* Evenement : Diminution de la température interne*/
-		    private void jButtonDiminuerTiActionPerformed(java.awt.event.ActionEvent evt) {                                                  
-		      
-		        if(evt.getSource() == jButtonDiminuerTi) {                
-		        	jTextThermoIn.setText(String.valueOf(--temp_interne));
-		        	ThermosController.toggleThermometer(ThermosConstants.THERMOMETER_INT, temp_interne);
-		         }
-		    }   
+		         new Thread(){
+	                    public void run() {
+	       	        	 ThermosController.toggleThermometer(ThermosConstants.THERMOMETER_INT, temp_interne);
+	                    }
+	                }.start();
+		    }    
 
 		    /* Evenement : Modification de la temperature de consigne*/
-		    private void jButtonAugmenterTCActionPerformed(java.awt.event.ActionEvent evt) {                                                   
+		    private void modificationTempConsigne(java.awt.event.ActionEvent evt) {                                                   
 		      
 		          if(evt.getSource() == jButtonAugmenterTC) {                    
 		        	  jTextTempCons.setText(String.valueOf(++temp_consigne));
-		        	  ThermosController.toggleTempConsigne(temp_consigne); 
-		         }
-		    }                                                  
+		          }else if(evt.getSource() == jButtonDiminuerTC){
+			           jTextTempCons.setText(String.valueOf(--temp_consigne));
 
-		    /* Evenement : Diminution de la temperature de consigne*/
-		    private void jButtonDiminuerTCActionPerformed(java.awt.event.ActionEvent evt) {                                                  
-                          
-                    	if(evt.getSource() == jButtonDiminuerTC) {
-		        	 jTextTempCons.setText(String.valueOf(--temp_consigne));
-		             ThermosController.toggleTempConsigne(temp_consigne);       
-		         }
-                
-		    }                                               
+		          }
+		          new Thread(){
+	                    public void run() {
+	  		        	  ThermosController.toggleTempConsigne(temp_consigne); 
+	                    }
+	                }.start();
+		    }                                                                                   
 		    
 		    /* Evenement : Changement d'état du radiateur*/
 		   private void jComboBoxRadiatorActionPerformed(java.awt.event.ActionEvent evt) {                                                  
@@ -553,34 +547,37 @@ public class GUI extends JFrame {
 		    
 		    /* Evenement : Changement d'état de la fenêtre*/
 		    private void jComboBoxWindowActionPerformed(java.awt.event.ActionEvent evt) {                                                
-		        if(jComboBoxWindow.getSelectedItem().toString().equals("Fermer")){
-		        	ThermosController.toggleWindowState(ThermosConstants.WINDOW_1,ConnectedState.Closed);
+		    	final ConnectedState changementEtat;
+		    	if(jComboBoxWindow.getSelectedItem().toString().equals("Fermer")){
+		    		changementEtat = ConnectedState.Closed;
 		        	jLabelWindow.setIcon(Window_Close);
 		        	jComboBoxRadiator.setSelectedItem("Faible");
 		        }
 		        else {
-		        	ThermosController.toggleWindowState(ThermosConstants.WINDOW_1,ConnectedState.Open);
+		        	changementEtat = ConnectedState.Open;
 		        	jLabelWindow.setIcon(Window_Open);
 		        }
+		        new Thread(){
+                    public void run() {
+    		        	ThermosController.toggleWindowState(ThermosConstants.WINDOW_1,changementEtat);
+                    }
+                }.start();
 		    }                                               
 
-		    /* Evenement : Augmentation de la température externe*/
-		    private void jButtonAugmenterTEActionPerformed(java.awt.event.ActionEvent evt) {  
-		           
+		    /* Evenement : modification de la température externe*/
+		    private void modificationTempExterne(java.awt.event.ActionEvent evt) {      
 		        if(evt.getSource() == jButtonAugmenterTE) {  
 		        	jTextThermoEx.setText(String.valueOf(++temp_externe));
-		        	ThermosController.toggleThermometer(ThermosConstants.THERMOMETER_EXT, temp_externe);
-		      }
+		        } else if(evt.getSource() == jButtonDiminuerTE){
+	            	 jTextThermoEx.setText(String.valueOf(--temp_externe));
+		        }
+		        new Thread(){
+                    public void run() {
+    		        	ThermosController.toggleThermometer(ThermosConstants.THERMOMETER_EXT, temp_externe);
+                    }
+                }.start();
 		    }  
-		    
-		    /* Evenement : Diminution de la température externe*/
-		    private void jButtonDiminuerTEActionPerformed(java.awt.event.ActionEvent evt) {                                                  
-
-		              if(evt.getSource() == jButtonDiminuerTE) {
-		            	 jTextThermoEx.setText(String.valueOf(--temp_externe));
-		            	 ThermosController.toggleThermometer(ThermosConstants.THERMOMETER_EXT, temp_externe);
-		              } 
-		    }                                                 
+		                                          
 
 		    /**
 		     * Sets the ConnectedIcon depending on the newState
