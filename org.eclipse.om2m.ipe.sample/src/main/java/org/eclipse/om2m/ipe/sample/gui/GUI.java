@@ -25,54 +25,101 @@ import org.eclipse.om2m.ipe.sample.model.ThermosModel;
 import org.osgi.framework.FrameworkUtil;
 
 public class GUI extends JFrame {
-	public int count;
-	public int countTi;
-	public int countTc; 
 	
-	private ImageIcon Radiator_Low = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/RadiateurOuvert"));
-	private ImageIcon Radiator_Close = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/RadiateurFermer"));
-	private ImageIcon Radiator_Strong = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/RadiateurFort"));
-	private ImageIcon Thermometer = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/thermometer"));
-	private ImageIcon Window_Open = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/fenetreOuvert"));
-	private ImageIcon Window_Close = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/fenetreFermer"));
-	private ImageIcon State_On = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/Btn_ON"));
-	private ImageIcon State_Off = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/Btn_OFF"));
+	private JPanel contentPanel1;
+    static JPanel jPanelOuvetFermet;
+    static JPanel panelTemperatureConsigne;
+    static JPanel panel_Radiator;
+    static JPanel panel_Thermometer_Ext;
+    static JPanel panel_Thermometer_Int;
+    static JPanel panel_Window;
+    
+    static Log LOGGER = LogFactory.getLog(GUI.class);
+    private static final long serialVersionUID = 1L;
+    static ThermosModel.ConnectedObserver connectedObserver;
 
 	
+	/*Les températures lors de l'exucution du programme*/
+	private int temp_externe;
+	private int temp_interne;
+	private int temp_consigne; 
 	
+	                
+    static JLabel LABEL_RADIATOR;
+    static JLabel LABEL_THERMOMETER_EXT;
+    static JLabel LABEL_WINDOW;
+    static JLabel LABEL_THERMOMETER_Int;
+    static JLabel jLabelFermer;
+    static JLabel jLabelRadiator;
+    static JLabel jLabelTempConsigne;
+    static JLabel jLabelTermo;
+    static JLabel jLabelWindow;
+    
+    static JButton jButtonAugmenterTC;
+    static JButton jButtonAugmenterTE;
+    static JButton jButtonAugmenterTi;
+    static JButton jButtonDiminuerTC;
+    static JButton jButtonDiminuerTE;
+    static JButton jButtonDiminuerTi;
+    
+    static JComboBox<String> jComboBoxRadiator;
+    static JComboBox<String> jComboBoxWindow;
+    
+    static JTextField jTextTempCons;
+    static JTextField jTextThermoEx;
+    static JTextField jTextThermoIn;
+    
+    
+    static String WINDOW = "WINDOW";
+    static String RADIATOR = "RADIATOR";
+    static String THERMOMETER_EXT = "THERMOMETER_EXT";
+    static String THERMOMETER_INT = "THERMOMETER_INT";
+    
+	/*Les différentes images liées aux états des ressources*/
+	static ImageIcon Radiator_Low = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/RadiateurOuvert"));
+	static ImageIcon Radiator_Close = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/RadiateurFermer"));
+	static ImageIcon Radiator_Strong = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/RadiateurFort"));
+	static ImageIcon Thermometer = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/thermometer"));
+	static ImageIcon Window_Open = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/fenetreOuvert"));
+	static ImageIcon Window_Close = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/fenetreFermer"));
+	static ImageIcon State_On = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/Btn_ON"));
+	static ImageIcon State_Off = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/Btn_OFF"));	
 	
-			// pour incrementer les compteurs de temperature externe interne et consigne
+			
 		
-		   
-			public GUI() {
-		// instanciation
-				
-		        contentPanel1 = new JPanel(); // Panel pour toute l'interface
+			/**
+	 		* Creates the frame.
+     		*/
+			public GUI() {				
+		        contentPanel1 = new JPanel(); 
 		        
-		        panel_Window = new JPanel(); // Panel pour la parti ou il y a le traitment sur Window
-		        LABEL_WINDOW = new JLabel(); // label " Windows"
-		        jLabelWindow = new JLabel(); // label pour icone window
-		        jComboBoxWindow = new JComboBox<>(); // conboBox pour window (fermer , ouvert)
+		        /*Window */
+		        panel_Window = new JPanel(); 
+		        LABEL_WINDOW = new JLabel();
+		        jLabelWindow = new JLabel(); 
+		        jComboBoxWindow = new JComboBox<>(); 
 		        
-		        panel_Radiator = new JPanel(); //Panel pour la parti ou il y a le traitment sur Radiator
-		        LABEL_RADIATOR = new JLabel(); // label " Radiator"
-		        jComboBoxRadiator = new JComboBox<>();  // conboBox pour Radiateur (faible , fort,..)
-		        jLabelRadiator = new JLabel();  // label pour icone Radiateur
+		        /*Radiator */
+		        panel_Radiator = new JPanel();
+		        LABEL_RADIATOR = new JLabel();
+		        jComboBoxRadiator = new JComboBox<>();  
+		        jLabelRadiator = new JLabel(); 
 		        
-		        panel_Thermometer_Ext = new JPanel(); // panel tehrmo externe
-		        LABEL_THERMOMETER_EXT = new JLabel(); // label "thermo externe"
-		        jTextThermoEx = new JTextField(); // textfield pour le trhemo externe
-		        jButtonAugmenterTE = new JButton(); // button augmenter temperature
-		        jButtonDiminuerTE = new JButton();  // button diminuer temperature
+		        /*Thermometre extérieur */
+		        panel_Thermometer_Ext = new JPanel();
+		        LABEL_THERMOMETER_EXT = new JLabel(); 
+		        jTextThermoEx = new JTextField(); 
+		        jButtonAugmenterTE = new JButton();
+		        jButtonDiminuerTE = new JButton();  
 		        
-		        // panel thermo interne
+		        /*Thermometre intérieur */
 		        panel_Thermometer_Int = new JPanel();
 		        LABEL_THERMOMETER_Int = new JLabel();
 		        jButtonAugmenterTi = new JButton();
 		        jButtonDiminuerTi = new JButton();
 		        jTextThermoIn = new JTextField();
 		        
-		        // panel thermo consigne
+		        /*Temperature de consigne */
 		        panelTemperatureConsigne = new JPanel();
 		        jLabelTermo = new JLabel();
 		        jLabelTempConsigne = new JLabel();
@@ -81,16 +128,15 @@ public class GUI extends JFrame {
 		        jButtonDiminuerTC = new JButton();
 		        jPanelOuvetFermet = new JPanel();
 		        
-		        // icon fermer et ouvert service
+		        /*Icon gérant a fermeture du service*/
 		        jLabelFermer = new JLabel();
 		       // jLabelOuvert = new JLabel();
 
 		        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		        
 		        
-		        //observers
-		        connectedObserver = new ThermosModel.ConnectedObserver() {
-					
+		        /*Override des observeurs */
+		        connectedObserver = new ThermosModel.ConnectedObserver() {			
 					@Override
 					public void onConnectedStateChange(String connectedId, ConnectedState state) {
 						setLabelConnected(connectedId, state);
@@ -99,9 +145,13 @@ public class GUI extends JFrame {
 
 		        ThermosModel.addObserver(connectedObserver);
 
-
-		        // poisitionnement parti window 
 		        
+		        /*
+		         * Possitionnement des différents composants du système dans un groupLayout :
+		         * Raiator, Window , et thermometre
+		         */
+		        
+		        /*WINDOW */
 		        LABEL_WINDOW.setFont(new java.awt.Font("Tahoma", 1, 11));
 		        LABEL_WINDOW.setText("Window");
 		        jLabelWindow.setIcon(Window_Open);
@@ -111,7 +161,6 @@ public class GUI extends JFrame {
 		                jComboBoxWindowActionPerformed(evt);
 		            }
 		        });
-
 		        GroupLayout panel_WindowLayout = new GroupLayout(panel_Window);
 		        panel_Window.setLayout(panel_WindowLayout);
 		        panel_WindowLayout.setHorizontalGroup(
@@ -141,10 +190,9 @@ public class GUI extends JFrame {
 		                        .addComponent(jComboBoxWindow,GroupLayout.PREFERRED_SIZE,GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
 		                .addContainerGap(41, Short.MAX_VALUE))
 		        );
-
+		       
 		        
-		        // positionnemen parti radiateur
-		        
+		        /*RADIATOR */	 
 		        LABEL_RADIATOR.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
 		        LABEL_RADIATOR.setText("Radiateur");
 
@@ -154,9 +202,7 @@ public class GUI extends JFrame {
 		                jComboBoxRadiatorActionPerformed(evt);
 		            }
 		        });
-
 		        jLabelRadiator.setIcon(Radiator_Low); // NOI18N
-
 		        GroupLayout panel_RadiatorLayout = new GroupLayout(panel_Radiator);
 		        panel_Radiator.setLayout(panel_RadiatorLayout);
 		        panel_RadiatorLayout.setHorizontalGroup(
@@ -183,7 +229,7 @@ public class GUI extends JFrame {
 		        );
 		        
 
-		        // Positionnement panel Thermo Externe
+		        /*THERMOMETRE EXTERIEUR */	
 		        LABEL_THERMOMETER_EXT.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
 		        LABEL_THERMOMETER_EXT.setText("Temperature Externe");
 
@@ -192,29 +238,23 @@ public class GUI extends JFrame {
 		                jTextThermoExActionPerformed(evt);
 		            }
 		        });
-
-		        jButtonAugmenterTE.setLabel("+");
-		        
+		        jButtonAugmenterTE.setLabel("+");		        
 		        jButtonAugmenterTE.addMouseListener(new java.awt.event.MouseAdapter() {
 		            public void mouseClicked(java.awt.event.MouseEvent evt) {
 		                jButtonAugmenterTEMouseClicked(evt);
 		            }
-		        });
-		        
+		        });	        
 		        jButtonAugmenterTE.addActionListener(new java.awt.event.ActionListener() {
 		            public void actionPerformed(java.awt.event.ActionEvent evt) {
 		                jButtonAugmenterTEActionPerformed(evt);
 		            }
 		        });
-
-		        jButtonDiminuerTE.setLabel("-");
-		        
+		        jButtonDiminuerTE.setLabel("-");		        
 		        jButtonDiminuerTE.addActionListener(new java.awt.event.ActionListener() {
 		            public void actionPerformed(java.awt.event.ActionEvent evt) {
 		                jButtonDiminuerTEActionPerformed(evt);
 		            }
 		        });
-
 		        GroupLayout panel_Thermometer_ExtLayout = new GroupLayout(panel_Thermometer_Ext);
 		        panel_Thermometer_Ext.setLayout(panel_Thermometer_ExtLayout);
 		        panel_Thermometer_ExtLayout.setHorizontalGroup(
@@ -248,14 +288,12 @@ public class GUI extends JFrame {
 		                        .addComponent(jButtonDiminuerTE)))
 		                .addGap(0, 46, Short.MAX_VALUE))
 		        );
-
 		        jButtonAugmenterTE.getAccessibleContext().setAccessibleName("setLabel");
 		        jButtonDiminuerTE.getAccessibleContext().setAccessibleName("setLabel");
 
 		        
 		        
-		        // positionement parti thermo interne
-		        
+		        /*THERMOMETRE INTERIEUR */	
 		        LABEL_THERMOMETER_Int.setFont(new java.awt.Font("Tahoma", 1, 11)); 
 		        LABEL_THERMOMETER_Int.setText("Temperature Interne");
 
@@ -272,7 +310,6 @@ public class GUI extends JFrame {
 		                jButtonDiminuerTiActionPerformed(evt);
 		            }
 		        });
-
 		        GroupLayout panel_Thermometer_IntLayout = new GroupLayout(panel_Thermometer_Int);
 		        panel_Thermometer_Int.setLayout(panel_Thermometer_IntLayout);
 		        panel_Thermometer_IntLayout.setHorizontalGroup(
@@ -304,42 +341,34 @@ public class GUI extends JFrame {
 		                        .addComponent(jButtonDiminuerTi)))
 		                .addContainerGap(72, Short.MAX_VALUE))
 		        );
-
 		        jButtonAugmenterTi.getAccessibleContext().setAccessibleName("setLabel");
 		        jButtonDiminuerTi.getAccessibleContext().setAccessibleName("setLabel");
-
 		        jLabelTermo.setIcon(Thermometer); // NOI18N
 
 		        
-		        // positionnement thermo consigne
-		        
+		        /*TEMPERATURE DE CONSIGNE */	
 		        jLabelTempConsigne.setFont(new java.awt.Font("Tahoma", 1, 11)); 
 		        jLabelTempConsigne.setText("Temperature Consigne");
-
 		        jTextTempCons.addActionListener(new java.awt.event.ActionListener() {
 		            public void actionPerformed(java.awt.event.ActionEvent evt) {
 		                jTextTempConsActionPerformed(evt);
 		            }
 		        });
-
 		        jButtonAugmenterTC.setText("+");
 		        jButtonAugmenterTC.addActionListener(new java.awt.event.ActionListener() {
 		            public void actionPerformed(java.awt.event.ActionEvent evt) {
 		                jButtonAugmenterTCActionPerformed(evt);
 		            }
 		        });
-
 		        jButtonDiminuerTC.setText("-");
 		        jButtonDiminuerTC.setMaximumSize(new java.awt.Dimension(41, 23));
 		        jButtonDiminuerTC.setMinimumSize(new java.awt.Dimension(41, 23));
 		        jButtonDiminuerTC.setPreferredSize(new java.awt.Dimension(41, 23));
-		        
 		        jButtonDiminuerTC.addActionListener(new java.awt.event.ActionListener() {
 		            public void actionPerformed(java.awt.event.ActionEvent evt) {
 		                jButtonDiminuerTCActionPerformed(evt);
 		            }
 		        });
-
 		        GroupLayout panelTemperatureConsigneLayout = new GroupLayout(panelTemperatureConsigne);
 		        panelTemperatureConsigne.setLayout(panelTemperatureConsigneLayout);
 		        panelTemperatureConsigneLayout.setHorizontalGroup(
@@ -380,15 +409,14 @@ public class GUI extends JFrame {
 		                        .addComponent(jTextTempCons, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 		                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
 		        );
-
 		        jLabelTempConsigne.getAccessibleContext().setAccessibleName("setLabel");
 		        jButtonAugmenterTC.getAccessibleContext().setAccessibleName("setLabel");
 		        jButtonDiminuerTC.getAccessibleContext().setAccessibleName("setLabel");
 
+		        
+		        /*ACTIVATION/DESACTIVATION SYSTEME */	
 		        jLabelFermer.setIcon(State_Off); 
-
 		       // jLabelOuvert.setIcon(new ImageIcon("C:\\Users\\abchabassem\\Desktop\\Btn_ON.png")); 
-
 		        GroupLayout jPanelOuvetFermetLayout = new GroupLayout(jPanelOuvetFermet);
 		        jPanelOuvetFermet.setLayout(jPanelOuvetFermetLayout);
 		        jPanelOuvetFermetLayout.setHorizontalGroup(
@@ -410,6 +438,7 @@ public class GUI extends JFrame {
 		                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		        );
 
+		        /*GUI Contenant toutes les ressources */
 		        GroupLayout contentPanel1Layout = new GroupLayout(contentPanel1);
 		        contentPanel1.setLayout(contentPanel1Layout);
 		        contentPanel1Layout.setHorizontalGroup(
@@ -449,9 +478,7 @@ public class GUI extends JFrame {
 		                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
 		                .addComponent(jPanelOuvetFermet, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 		        );
-
 		        panel_Thermometer_Int.getAccessibleContext().setAccessibleName("");
-
 		        GroupLayout layout = new GroupLayout(getContentPane());
 		        getContentPane().setLayout(layout);
 		        layout.setHorizontalGroup(
@@ -468,145 +495,127 @@ public class GUI extends JFrame {
 		        );
 
 		        contentPanel1.getAccessibleContext().setAccessibleName("Thermo Interne");
-		        
-		        
-
 		        pack();
 		    }                       
 
+			/*
+			 * Les méthodes qui suivront sont liés aux évenements et changements pouvant intervenir lorsque 
+			 * le service de régulation change d'état
+			 */
 		    
-		    // Action Button augmenter la temperature interne
-		    
+		    /* Evenement : Augmentation de la temperature interne*/
 		    private void jButtonAugmenterTiActionPerformed(java.awt.event.ActionEvent evt) {                                                   
 		        // TODO add your handling code here:
 		         if(evt.getSource() == jButtonAugmenterTi) {
-		        	 jTextThermoIn.setText(String.valueOf(++countTi));
-		        	 ThermosController.toggleThermometer(ThermosConstants.THERMOMETER_INT, countTi);
+		        	// jTextThermoIn.setText(String.valueOf(++temp_interne));
+		        	 ThermosController.toggleThermometer(ThermosConstants.THERMOMETER_INT, temp_interne);
 		         }
-		    }                                                  
-
+		    }  
 		    
-		    private void jTextTempConsActionPerformed(java.awt.event.ActionEvent evt) {                                              
-		        // TODO add your handling code here:
-		    }                                             
+		    /* Evenement : Diminution de la température interne*/
+		    private void jButtonDiminuerTiActionPerformed(java.awt.event.ActionEvent evt) {                                                  
+		      
+		        if(evt.getSource() == jButtonDiminuerTi) {                
+		        	jTextThermoIn.setText(String.valueOf(--temp_interne));
+		        	ThermosController.toggleThermometer(ThermosConstants.THERMOMETER_INT, temp_interne);
+		         }
+		    }   
 
-		    
-		    // Action Button augmenter la temperature consigne
+		    /* Evenement : Modification de la temperature de consigne*/
 		    private void jButtonAugmenterTCActionPerformed(java.awt.event.ActionEvent evt) {                                                   
 		      
 		          if(evt.getSource() == jButtonAugmenterTC) {                    
-		        	  jTextTempCons.setText(String.valueOf(++countTc));
-		        	  ThermosController.toggleTempConsigne(countTc); 
+		        	  jTextTempCons.setText(String.valueOf(++temp_consigne));
+		        	  ThermosController.toggleTempConsigne(temp_consigne); 
 		         }
 		    }                                                  
 
-		 // Action button pour diminuer la temperature consigne
+		    /* Evenement : Diminution de la temperature de consigne*/
 		    private void jButtonDiminuerTCActionPerformed(java.awt.event.ActionEvent evt) {                                                  
-		      
-		         if(evt.getSource() == jButtonDiminuerTC) {
-		        	 jTextTempCons.setText(String.valueOf(--countTc));
-		             ThermosController.toggleTempConsigne(countTc);       
+                          
+                    	if(evt.getSource() == jButtonDiminuerTC) {
+		        	 jTextTempCons.setText(String.valueOf(--temp_consigne));
+		             ThermosController.toggleTempConsigne(temp_consigne);       
 		         }
+                
+		    }                                               
+		    
+		    /* Evenement : Changement d'état du radiateur*/
+		   private void jComboBoxRadiatorActionPerformed(java.awt.event.ActionEvent evt) {                                                  
+			   if(jComboBoxRadiator.getSelectedItem().toString().equals("Faible"))
+				   jLabelRadiator.setIcon(Radiator_Low);
+			   else if(jComboBoxRadiator.getSelectedItem().toString().equals("Eteint"))
+				   jLabelRadiator.setIcon(Radiator_Close);
+			   else
+				   jLabelRadiator.setIcon(Radiator_Strong); 
 		    }                                                 
 
 		    
-		    //Action changement etat de icone Radiateur ( faible , fort , eteint)
-		    private void jComboBoxRadiatorActionPerformed(java.awt.event.ActionEvent evt) {                                                  
-
-		   if(jComboBoxRadiator.getSelectedItem().toString().equals("Faible"))
-		       jLabelRadiator.setIcon(Radiator_Low);
-		   else if(jComboBoxRadiator.getSelectedItem().toString().equals("Eteint"))
-		        jLabelRadiator.setIcon(Radiator_Close);
-		   else
-		      jLabelRadiator.setIcon(Radiator_Strong); 
-		    }                                                 
-
-		    
-		    //Action changement etat de icone window ( fermet , ouvert)
+		    /* Evenement : Changement d'état de la fenêtre*/
 		    private void jComboBoxWindowActionPerformed(java.awt.event.ActionEvent evt) {                                                
 		        if(jComboBoxWindow.getSelectedItem().toString().equals("Fermer")){
 		        	ThermosController.toggleWindowState(ThermosConstants.WINDOW_1,ConnectedState.Closed);
-		       jLabelWindow.setIcon(Window_Close);
-		        jComboBoxRadiator.setSelectedItem("Faible");
+		        	jLabelWindow.setIcon(Window_Close);
+		        	jComboBoxRadiator.setSelectedItem("Faible");
 		        }
-		        else 
+		        else {
 		        	ThermosController.toggleWindowState(ThermosConstants.WINDOW_1,ConnectedState.Open);
-		        jLabelWindow.setIcon(Window_Open);
+		        	jLabelWindow.setIcon(Window_Open);
+		        }
 		    }                                               
 
-		    
-		    // // Action button pour augmenter la temperature externe
+		    /* Evenement : Augmentation de la température externe*/
 		    private void jButtonAugmenterTEActionPerformed(java.awt.event.ActionEvent evt) {  
 		           
 		        if(evt.getSource() == jButtonAugmenterTE) {  
-		        	jTextThermoEx.setText(String.valueOf(++count));
-		        	ThermosController.toggleThermometer(ThermosConstants.THERMOMETER_EXT, count);
+		        	jTextThermoEx.setText(String.valueOf(++temp_externe));
+		        	ThermosController.toggleThermometer(ThermosConstants.THERMOMETER_EXT, temp_externe);
 		      }
-		    }                                                  
-
-		    private void jTextThermoExActionPerformed(java.awt.event.ActionEvent evt) {                                              
-		        
-		    }                                             
-
-		    private void jButtonAugmenterTEMouseClicked(java.awt.event.MouseEvent evt) {                                                
-
-		    }                                               
-
-		 // Action button pour diminuer la temperature externe
+		    }  
+		    
+		    /* Evenement : Diminution de la température externe*/
 		    private void jButtonDiminuerTEActionPerformed(java.awt.event.ActionEvent evt) {                                                  
 
 		              if(evt.getSource() == jButtonDiminuerTE) {
-		            	 jTextThermoEx.setText(String.valueOf(--count));
-		            	 ThermosController.toggleThermometer(ThermosConstants.THERMOMETER_EXT, count);
+		            	 jTextThermoEx.setText(String.valueOf(--temp_externe));
+		            	 ThermosController.toggleThermometer(ThermosConstants.THERMOMETER_EXT, temp_externe);
 		              } 
 		    }                                                 
 
-		    // Action button pour diminuer la temperature interne
-		    private void jButtonDiminuerTiActionPerformed(java.awt.event.ActionEvent evt) {                                                  
-		      
-		         if(evt.getSource() == jButtonDiminuerTi) {                
-		        jTextThermoIn.setText(String.valueOf(--countTi));
-           	 ThermosController.toggleThermometer(ThermosConstants.THERMOMETER_INT, countTi);
-		         }
-		    }                                                 
-
-		    
-		    // Changement de l'icône et du label en fonction de l'état de l'objet
+		    /**
+		     * Sets the ConnectedIcon depending on the newState
+		     * @param connectedId - The Connected AppId
+		     * @param newState - The new ConnectedState
+		     */
 		    public static void setLabelConnected(String connectedId, ConnectedState newState) {
 		        JLabel label = new JLabel("");
-		        if ("LABEL_RADIATOR".endsWith(connectedId)) {
-		            label = LABEL_RADIATOR;
+		        if (connectedId.contains("Radiator")) {
 		            if(newState == ConnectedState.Off) {	            	
-		                label.setIcon(new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/RadiateurFermer")));
+		            	LABEL_RADIATOR.setIcon(Radiator_Close);
 		            } else if(newState == ConnectedState.Low) {
-		                label.setIcon(new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/RadiateurOuvert")));
+		            	LABEL_RADIATOR.setIcon(Radiator_Low);
 		            } else if(newState == ConnectedState.Strong){
-		            	label.setIcon(new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/RadiateurFort")));
+		            	LABEL_RADIATOR.setIcon(Radiator_Strong);
 		            }
-		        }
-		        else if ("LABEL_WINDOW".endsWith(connectedId)) {
-		        	label = LABEL_WINDOW;
-		        	if(newState == ConnectedState.Open)
-		        		label.setIcon(new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/fenetreOuvert")));
-		        	else if(newState == ConnectedState.Closed)
-		        		label.setIcon(new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/fenetreFermer")));
-		        }
-		        /*
-		        else if ("LABEL_THERMOMETER_EXT".endsWith(connectedId)) {
-		        	label = LABEL_THERMOMETER_EXT;
-		        	//label.setIcon(new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/thermometer")));
-		        }
-		        else if ("LABEL_THERMOMETER_INT".endsWith(connectedId)) {
-		        	label = LABEL_THERMOMETER_INT;
-		        	//label.setIcon(new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/thermometer")));
-		        }*/
-		        
+		        }	
 		    }
-		    
-		    
-		    
-		    // le void Main
-		   
+		        
+		        private void jTextThermoExActionPerformed(java.awt.event.ActionEvent evt) {                                              
+			        
+			    }                                             
+
+			    private void jButtonAugmenterTEMouseClicked(java.awt.event.MouseEvent evt) {                                                
+
+			    }
+			                                                  
+			    private void jTextTempConsActionPerformed(java.awt.event.ActionEvent evt) {                                              
+			        // TODO add your handling code here:
+			    }
+
+		  
+			/**
+			* Initiate The GUI.
+			*/
 		    public static void init() {
 		        EventQueue.invokeLater(new Runnable() {
 		            public void run() {
@@ -619,49 +628,14 @@ public class GUI extends JFrame {
 		        });
 		    }
 
+		    /**
+		     * Stop the GUI.
+		     */
 		    public static void stop() {
 		    	ThermosModel.deleteObserver(connectedObserver);
 		        new GUI().setVisible(false);
 		        new GUI().dispose();
 		    }
-		    
-		    // Variables declaration                   
-		    static JLabel LABEL_RADIATOR;
-		    static JLabel LABEL_THERMOMETER_EXT;
-		    static JLabel LABEL_WINDOW;
-		    private JPanel contentPanel1;
-		    static JButton jButtonAugmenterTC;
-		    static JButton jButtonAugmenterTE;
-		    static JButton jButtonAugmenterTi;
-		    private JButton jButtonDiminuerTC;
-		    static JButton jButtonDiminuerTE;
-		    static JButton jButtonDiminuerTi;
-		    static JComboBox<String> jComboBoxRadiator;
-		    static JComboBox<String> jComboBoxWindow;
-		    private JLabel LABEL_THERMOMETER_Int;
-		    static JLabel jLabelFermer;
-		    //static JLabel jLabelOuvert;
-		    static JLabel jLabelRadiator;
-		    private JLabel jLabelTempConsigne;
-		    static JLabel jLabelTermo;
-		    static JLabel jLabelWindow;
-		    static JPanel jPanelOuvetFermet;
-		    static JTextField jTextTempCons;
-		    static JTextField jTextThermoEx;
-		    static JTextField jTextThermoIn;
-		    static JPanel panelTemperatureConsigne;
-		    static JPanel panel_Radiator;
-		    static JPanel panel_Thermometer_Ext;
-		    static JPanel panel_Thermometer_Int;
-		    static JPanel panel_Window;
-		    static Log LOGGER = LogFactory.getLog(GUI.class);
-		    private static final long serialVersionUID = 1L;
-		    static String WINDOW = "WINDOW";
-		    static String RADIATOR = "RADIATOR";
-		    static String THERMOMETER_EXT = "THERMOMETER_EXT";
-		    static String THERMOMETER_INT = "THERMOMETER_INT";
-		    static ThermosModel.ConnectedObserver connectedObserver;
 
-			
 			
 		}
