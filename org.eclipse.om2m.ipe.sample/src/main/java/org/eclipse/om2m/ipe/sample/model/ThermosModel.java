@@ -45,10 +45,17 @@ public class ThermosModel {
 		return ((Thermometer)CONNECTED.get(ThermosConstants.THERMOMETER_EXT)).getTemperature();
 	}
 
-	public static void setConnectedState(final String ConnectedId, ConnectedState state) {
-		checkConnectedIdValue(ConnectedId);
-		CONNECTED.get(ConnectedId).setState(state);
-		notifyObservers(ConnectedId, state);
+	/*
+	 * Change l'état de l'objet connecté 
+	 * @param connectedId Id de la ressource
+	 * @param state nouvelle état voulu
+	 */
+	public static void setConnectedState(final String connectedId, ConnectedState state) {
+		checkConnectedIdValue(connectedId);
+		CONNECTED.get(connectedId).setState(state);
+
+		//Condition à changer à changer :
+		if(connectedId.contains("Radiator")) notifyObservers(connectedId, state);									
 	}
 	
 	public static double getCoefUser(){

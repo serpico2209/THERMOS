@@ -9,7 +9,7 @@ public class Thermometer extends Connected{
     public Thermometer(String ConnectedId, ConnectedState state){
     	super(ConnectedId);
     	this.connectedState = state;
-    	this.temperature = 0;
+    	this.temperature = 27;
     }
 
 	public int getTemperature() {

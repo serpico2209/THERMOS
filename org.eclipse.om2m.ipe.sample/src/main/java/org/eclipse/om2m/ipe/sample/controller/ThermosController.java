@@ -14,6 +14,11 @@ public class ThermosController {
 	public static CseService CSE;
 	protected static String AE_ID;
 	
+	/*
+	 * Création de la requete et set du changement d'état au Model
+	 * @param connectedId Id de la ressource
+	 * @param state etat de la ressource
+	 */
 	public static void setConnectedState(String connectedId, ConnectedState state){
 		// Set the value in the "real world" model
 		ThermosModel.setConnectedState(connectedId, state);
@@ -37,6 +42,7 @@ public class ThermosController {
 	
 	public static void toggleWindowState(String connectedId, ConnectedState state){
 			setConnectedState(connectedId,state);
+			if(state.equals(ConnectedState.Closed)) setConnectedState(ThermosConstants.RADIATOR_1,ConnectedState.Off);
 	}
 	
 	public static void toggleThermometer(String connectedId, int newTemp){
@@ -63,13 +69,13 @@ public class ThermosController {
 			double locDegreTolere = ThermosModel.getIntervalleTolerance();
 			
 			if(locTempInterne>locTempExterne){
-				toggleRadiatorState(Radiator.TYPE+"_"+1,ConnectedState.Off);
+				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Off);
 			}else if(locTempInterne>locTempExterne && locCoefUserTempExterne>locTempInterne){
-				toggleRadiatorState(Radiator.TYPE+"_"+1,ConnectedState.Strong);
+				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Strong);
 			}else if(locTempInterne>locCoefUserTempExterne && (locTempConsigne+locDegreTolere)>locTempInterne){
-				toggleRadiatorState(Radiator.TYPE+"_"+1,ConnectedState.Low);
+				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Low);
 			}else if(locTempInterne>(locTempConsigne+locDegreTolere) && locTempConsigne>locTempInterne){
-				toggleRadiatorState(Radiator.TYPE+"_"+1,ConnectedState.Off);
+				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Off);
 			}
 		}
 	}
