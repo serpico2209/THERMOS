@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.om2m.commons.exceptions.BadRequestException;
+import org.eclipse.om2m.ipe.sample.Activator;
 import org.eclipse.om2m.ipe.sample.constants.ThermosConstants;
 
 
@@ -15,6 +18,7 @@ public class ThermosModel {
 	private static int tempConsigne = 27;
 	private static boolean stateSystem= true;
 	private static ConnectedState profilUser= ConnectedState.Eco;
+    private static Log logger = LogFactory.getLog(Activator.class);
 	
 	private static Map<String,Connected> CONNECTED = new HashMap<String, Connected>();
 	private static List<ConnectedObserver> OBSERVERS = new ArrayList<ConnectedObserver>();
@@ -26,7 +30,6 @@ public class ThermosModel {
 	/**
 	 * @param ConnectedId 
 	 * @param newTemp Nouvelle température à setter
-	 * 
 	 * get l'object par son ID, vérifie que l'objet en question est bien un thermomètre
 	 * puis set une nouvelle température
 	 */
@@ -59,13 +62,23 @@ public class ThermosModel {
 	}
 	
 	public static double getCoefUser(){
-		if(profilUser.equals(ConnectedState.Eco))return (1/3);
-		return (2/3);
+		
+		if(profilUser.equals(ConnectedState.Eco)) {
+			return ((double)1 /(double)3);
+		} else if(profilUser.equals(ConnectedState.Confort)){
+			return ((double)2 /(double)3);
+		}else {
+			return 0;
+		}
 	}
 	
 	public static double getIntervalleTolerance(){
-		if(profilUser.equals(ConnectedState.Eco))return 1;
-		return 0.5;
+		if(profilUser.equals(ConnectedState.Eco)) {
+			return (double)1 ;
+		} else if(profilUser.equals(ConnectedState.Confort)){
+			return (double)0.5 ;
+		}
+		return 0;
 	}
 	
 	public static ConnectedState getConnectedState(String ConnectedId) {

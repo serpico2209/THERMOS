@@ -65,7 +65,7 @@ public class LifeCycleManager {
 		
 		ThermosModel.setModel(connected);
 		ThermosModel.setStatesystem(true);
-		ThermosModel.setProfiluser(ConnectedState.Eco);
+		ThermosModel.setProfiluser(ConnectedState.Confort);
 
 		createConnectedAll(ThermosConstants.POA);			
 

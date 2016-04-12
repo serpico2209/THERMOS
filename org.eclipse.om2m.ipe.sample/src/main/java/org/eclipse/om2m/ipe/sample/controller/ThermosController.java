@@ -1,9 +1,12 @@
 package org.eclipse.om2m.ipe.sample.controller;
 
 import org.eclipse.om2m.core.service.CseService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.om2m.commons.constants.MimeMediaType;
 import org.eclipse.om2m.commons.resource.ContentInstance;
 import org.eclipse.om2m.core.service.CseService;
+import org.eclipse.om2m.ipe.sample.Activator;
 import org.eclipse.om2m.ipe.sample.RequestSender;
 import org.eclipse.om2m.ipe.sample.constants.ThermosConstants;
 import org.eclipse.om2m.ipe.sample.model.*;
@@ -13,6 +16,7 @@ public class ThermosController {
 
 	public static CseService CSE;
 	protected static String AE_ID;
+    private static Log logger = LogFactory.getLog(Activator.class);
 	
 	/*
 	 * Création de la requete et set du changement d'état au Model
@@ -42,7 +46,11 @@ public class ThermosController {
 	
 	public static void toggleWindowState(String connectedId, ConnectedState state){
 			setConnectedState(connectedId,state);
-			if(state.equals(ConnectedState.Open)) setConnectedState(ThermosConstants.RADIATOR_1,ConnectedState.Off);
+			if(state.equals(ConnectedState.Open)) {
+				setConnectedState(ThermosConstants.RADIATOR_1,ConnectedState.Off);
+			} else if(state.equals(ConnectedState.Closed)){
+				regulTemperature();
+			}
 	}
 	
 	public static void toggleThermometer(String connectedId, int newTemp){
@@ -65,16 +73,17 @@ public class ThermosController {
 			int locTempInterne = ThermosModel.getTemperatureInterne();
 			int locTempExterne = ThermosModel.getTemperatureExterne();
 			int locTempConsigne = ThermosModel.getTempconsigne();
-			double locCoefUserTempExterne = locTempExterne +(ThermosModel.getCoefUser()*(locTempConsigne-locTempExterne));
+			double locCoefUser = ThermosModel.getCoefUser();
+			double locCoefUserTempExterne = (double) locTempExterne +(locCoefUser*((double)(locTempConsigne-locTempExterne)));
 			double locDegreTolere = ThermosModel.getIntervalleTolerance();
-			
-			if(locTempInterne>locTempExterne){
+	
+			if(locTempInterne>locTempConsigne){
 				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Off);
-			}else if(locTempInterne>locTempExterne && locCoefUserTempExterne>locTempInterne){
+			}else if((locTempInterne>locTempExterne) && (locCoefUserTempExterne>locTempInterne)){
 				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Strong);
-			}else if(locTempInterne>locCoefUserTempExterne && (locTempConsigne+locDegreTolere)>locTempInterne){
+			}else if((locTempInterne>locCoefUserTempExterne) && ((locTempConsigne-locDegreTolere)>locTempInterne)){
 				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Low);
-			}else if(locTempInterne>(locTempConsigne+locDegreTolere) && locTempConsigne>locTempInterne){
+			}else if((locTempInterne>(locTempConsigne-locDegreTolere)) && (locTempConsigne>locTempInterne)){
 				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Off);
 			}
 		}
