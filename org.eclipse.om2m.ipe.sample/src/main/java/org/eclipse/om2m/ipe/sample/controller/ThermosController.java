@@ -42,7 +42,7 @@ public class ThermosController {
 	
 	public static void toggleWindowState(String connectedId, ConnectedState state){
 			setConnectedState(connectedId,state);
-			if(state.equals(ConnectedState.Closed)) setConnectedState(ThermosConstants.RADIATOR_1,ConnectedState.Off);
+			if(state.equals(ConnectedState.Open)) setConnectedState(ThermosConstants.RADIATOR_1,ConnectedState.Off);
 	}
 	
 	public static void toggleThermometer(String connectedId, int newTemp){
