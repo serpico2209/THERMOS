@@ -1,23 +1,4 @@
-/*******************************************************************************
- * Copyright (c) 2013-2016 LAAS-CNRS (www.laas.fr)
- * 7 Colonel Roche 31077 Toulouse - France
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Initial Contributors:
- *     Thierry Monteil : Project manager, technical co-manager
- *     Mahdi Ben Alaya : Technical co-manager
- *     Samir Medjiah : Technical co-manager
- *     Khalil Drira : Strategy expert
- *     Guillaume Garzone : Developer
- *     François Aïssaoui : Developer
- *
- * New contributors :
- *******************************************************************************/
-package org.eclipse.om2m.ipe.sample;
+package org.eclipse.om2m.thermos.ipe;
 
 import java.math.BigInteger;
 
@@ -31,14 +12,11 @@ import org.eclipse.om2m.commons.resource.ContentInstance;
 import org.eclipse.om2m.commons.resource.RequestPrimitive;
 import org.eclipse.om2m.commons.resource.Resource;
 import org.eclipse.om2m.commons.resource.ResponsePrimitive;
-<<<<<<< HEAD
-import org.eclipse.om2m.ipe.sample.controller.ThermosController;
-//reception
-=======
-import org.eclipse.om2m.ipe.sample.controller.SampleController;
+import org.eclipse.om2m.core.service.CseService;
 
->>>>>>> master
 public class RequestSender {
+	
+	public static CseService CSE;
 	
 	/**
 	 * Private constructor to avoid creation of this object
@@ -55,11 +33,7 @@ public class RequestSender {
 		request.setContent(resource);
 		request.setName(name);
 		request.setOperation(Operation.CREATE);
-<<<<<<< HEAD
-		return ThermosController.CSE.doRequest(request);
-=======
-		return SampleController.CSE.doRequest(request);
->>>>>>> master
+		return CSE.doRequest(request);
 	}
 	
 	public static ResponsePrimitive createAE(AE resource, String name){
@@ -85,11 +59,7 @@ public class RequestSender {
 		request.setReturnContentType(MimeMediaType.OBJ);
 		request.setOperation(Operation.RETRIEVE);
 		request.setRequestContentType(MimeMediaType.OBJ);
-<<<<<<< HEAD
-		return ThermosController.CSE.doRequest(request);
-=======
-		return SampleController.CSE.doRequest(request);
->>>>>>> master
+		return CSE.doRequest(request);
 	}
 	
 }

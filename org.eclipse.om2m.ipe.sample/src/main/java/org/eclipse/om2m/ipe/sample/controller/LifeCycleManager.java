@@ -18,6 +18,10 @@
  * New contributors :
  *******************************************************************************/
 package org.eclipse.om2m.ipe.sample.controller;
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,12 +35,21 @@ import org.eclipse.om2m.commons.resource.Container;
 import org.eclipse.om2m.commons.resource.ContentInstance;
 import org.eclipse.om2m.commons.resource.ResponsePrimitive;
 import org.eclipse.om2m.ipe.sample.RequestSender;
+<<<<<<< HEAD
 import org.eclipse.om2m.ipe.sample.constants.ThermosConstants;
 import org.eclipse.om2m.ipe.sample.gui.GUI;
 import org.eclipse.om2m.ipe.sample.model.*;
 import org.eclipse.om2m.ipe.sample.util.ObixUtil;
 
 
+=======
+import org.eclipse.om2m.ipe.sample.constants.SampleConstants;
+import org.eclipse.om2m.ipe.sample.gui.GUI;
+import org.eclipse.om2m.ipe.sample.model.Lamp;
+import org.eclipse.om2m.ipe.sample.model.SampleModel;
+import org.eclipse.om2m.ipe.sample.util.ObixUtil;
+
+>>>>>>> master
 public class LifeCycleManager {
 
 	private static Log LOGGER = LogFactory.getLog(LifeCycleManager.class); 
@@ -45,6 +58,7 @@ public class LifeCycleManager {
 	 * Handle the start of the plugin with the resource representation and the GUI
 	 */
 	public static void start(){
+<<<<<<< HEAD
 		Map<String, Connected> connected = new HashMap<String, Connected>();
 		
 		String radiatorId = Radiator.TYPE+"_"+1;
@@ -71,6 +85,24 @@ public class LifeCycleManager {
 
 		// Start the GUI
 		if(ThermosConstants.GUI){
+=======
+		Map<String, Lamp> lamps = new HashMap<String, Lamp>();
+		for(int i=0; i<2; i++) {
+			String lampId = Lamp.TYPE+"_"+i;
+			lamps.put(lampId, new Lamp(lampId, false));
+		}
+		SampleModel.setModel(lamps);
+
+		// Create initial resources for the 2 lamps
+		for(int i=0; i<2; i++) {
+			String lampId = Lamp.TYPE+"_"+i;
+			createLampResources(lampId, false, SampleConstants.POA);
+		}
+		createLampAll(SampleConstants.POA);			
+
+		// Start the GUI
+		if(SampleConstants.GUI){
+>>>>>>> master
 			GUI.init();
 		}
 	}
@@ -79,7 +111,11 @@ public class LifeCycleManager {
 	 * Stop the GUI if it is present
 	 */
 	public static void stop(){
+<<<<<<< HEAD
 		if(ThermosConstants.GUI){
+=======
+		if(SampleConstants.GUI){
+>>>>>>> master
 			GUI.stop();
 		}
 	}
@@ -90,10 +126,17 @@ public class LifeCycleManager {
 	 * @param initValue - initial lamp value
 	 * @param poa - lamp Point of Access
 	 */
+<<<<<<< HEAD
 	private static void createConnectedResources(String appId, ConnectedState initValue, String poa) {
 		// Create the Application resource
 		Container container = new Container();
 		container.getLabels().add("connected");
+=======
+	private static void createLampResources(String appId, boolean initValue, String poa) {
+		// Create the Application resource
+		Container container = new Container();
+		container.getLabels().add("lamp");
+>>>>>>> master
 		container.setMaxNrOfInstances(BigInteger.valueOf(0));
 
 		AE ae = new AE();
@@ -107,6 +150,7 @@ public class LifeCycleManager {
 			container = new Container();
 			container.setMaxNrOfInstances(BigInteger.valueOf(10));
 			// Create DESCRIPTOR container sub-resource
+<<<<<<< HEAD
 			LOGGER.info(RequestSender.createContainer(response.getLocation(), ThermosConstants.DESC, container));
 			// Create STATE container sub-resource
 			LOGGER.info(RequestSender.createContainer(response.getLocation(), ThermosConstants.DATA, container));
@@ -114,34 +158,65 @@ public class LifeCycleManager {
 			String content;
 			// Create DESCRIPTION contentInstance on the DESCRIPTOR container resource
 			content = ObixUtil.getDescriptorRep(ThermosConstants.CSE_ID, appId, ThermosConstants.DATA);
+=======
+			LOGGER.info(RequestSender.createContainer(response.getLocation(), SampleConstants.DESC, container));
+			// Create STATE container sub-resource
+			LOGGER.info(RequestSender.createContainer(response.getLocation(), SampleConstants.DATA, container));
+
+			String content;
+			// Create DESCRIPTION contentInstance on the DESCRIPTOR container resource
+			content = ObixUtil.getDescriptorRep(SampleConstants.CSE_ID, appId, SampleConstants.DATA);
+>>>>>>> master
 			ContentInstance contentInstance = new ContentInstance();
 			contentInstance.setContent(content);
 			contentInstance.setContentInfo(MimeMediaType.OBIX);
 			RequestSender.createContentInstance(
+<<<<<<< HEAD
 					ThermosConstants.CSE_PREFIX + "/" + appId + "/" + ThermosConstants.DESC, null, contentInstance);
+=======
+					SampleConstants.CSE_PREFIX + "/" + appId + "/" + SampleConstants.DESC, null, contentInstance);
+>>>>>>> master
 
 			// Create initial contentInstance on the STATE container resource
 			content = ObixUtil.getStateRep(appId, initValue);
 			contentInstance.setContent(content);
 			RequestSender.createContentInstance(
+<<<<<<< HEAD
 					ThermosConstants.CSE_PREFIX + "/" + appId + "/" + ThermosConstants.DATA, null, contentInstance);
 		}
 	}
 
 
 	private static void createConnectedAll(String poa) {
+=======
+					SampleConstants.CSE_PREFIX + "/" + appId + "/" + SampleConstants.DATA, null, contentInstance);
+		}
+	}
+
+	/**
+	 * Create the LAMP_ALL container
+	 * @param poa
+	 */
+	private static void createLampAll(String poa) {
+>>>>>>> master
 		// Creation of the LAMP_ALL container
 		AE ae = new AE();
 		ae.setRequestReachability(true);
 		ae.getPointOfAccess().add(poa);
+<<<<<<< HEAD
 		ae.setAppID("CONNECTED_ALL");
 		ResponsePrimitive response = RequestSender.createAE(ae, "CONNECTED_ALL");
+=======
+		ae.setAppID("LAMP_ALL");
+		ResponsePrimitive response = RequestSender.createAE(ae, "LAMP_ALL");
+>>>>>>> master
 
 		// Create descriptor container if not yet created
 		if(response.getResponseStatusCode().equals(ResponseStatusCode.CREATED)){
 			// Creation of the DESCRIPTOR container
 			Container cnt = new Container();
 			cnt.setMaxNrOfInstances(BigInteger.valueOf(10));
+<<<<<<< HEAD
 			RequestSender.createContainer(ThermosConstants.CSE_PREFIX + "/" + "CONNECTED_ALL", ThermosConstants.DESC, cnt);
 
 			// Create the description
@@ -149,6 +224,15 @@ public class LifeCycleManager {
 			cin.setContent(ObixUtil.createConnectedAllDescriptor());
 			cin.setContentInfo(MimeMediaType.OBIX);
 			RequestSender.createContentInstance(ThermosConstants.CSE_PREFIX + "/" + "CONNECTED_ALL" + "/" + ThermosConstants.DESC, null, cin);
+=======
+			RequestSender.createContainer(SampleConstants.CSE_PREFIX + "/" + "LAMP_ALL", SampleConstants.DESC, cnt);
+
+			// Create the description
+			ContentInstance cin = new ContentInstance();
+			cin.setContent(ObixUtil.createLampAllDescriptor());
+			cin.setContentInfo(MimeMediaType.OBIX);
+			RequestSender.createContentInstance(SampleConstants.CSE_PREFIX + "/" + "LAMP_ALL" + "/" + SampleConstants.DESC, null, cin);
+>>>>>>> master
 		}
 	}
 

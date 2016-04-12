@@ -15,7 +15,10 @@
       </vmArgsMac>
    </launcherArgs>
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
    <launcher>
       <solaris/>
       <win useIco="false">
@@ -58,6 +61,10 @@
       <plugin id="org.eclipse.om2m.ipe.sample"/>
       <plugin id="org.eclipse.om2m.persistence.eclipselink"/>
       <plugin id="org.eclipse.om2m.persistence.service"/>
+<<<<<<< HEAD
+=======
+      <plugin id="org.eclipse.om2m.thermos.ipe"/>
+>>>>>>> master
       <plugin id="org.eclipse.om2m.webapp.resourcesbrowser.xml"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
