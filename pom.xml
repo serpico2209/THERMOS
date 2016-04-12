@@ -134,12 +134,5 @@
 		<module>org.eclipse.om2m.site.asn-cse</module>
 		<module>org.eclipse.om2m.site.in-cse</module>
 		<module>org.eclipse.om2m.site.mn-cse</module>
-<<<<<<< HEAD
-=======
-		
-		
-		
-		<module>org.eclipse.om2m.thermos.ipe</module>
->>>>>>> master
 	</modules>
 </project>

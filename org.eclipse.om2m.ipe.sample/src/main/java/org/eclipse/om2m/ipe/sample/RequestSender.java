@@ -31,13 +31,8 @@ import org.eclipse.om2m.commons.resource.ContentInstance;
 import org.eclipse.om2m.commons.resource.RequestPrimitive;
 import org.eclipse.om2m.commons.resource.Resource;
 import org.eclipse.om2m.commons.resource.ResponsePrimitive;
-<<<<<<< HEAD
 import org.eclipse.om2m.ipe.sample.controller.ThermosController;
 //reception
-=======
-import org.eclipse.om2m.ipe.sample.controller.SampleController;
-
->>>>>>> master
 public class RequestSender {
 	
 	/**
@@ -55,11 +50,7 @@ public class RequestSender {
 		request.setContent(resource);
 		request.setName(name);
 		request.setOperation(Operation.CREATE);
-<<<<<<< HEAD
 		return ThermosController.CSE.doRequest(request);
-=======
-		return SampleController.CSE.doRequest(request);
->>>>>>> master
 	}
 	
 	public static ResponsePrimitive createAE(AE resource, String name){
@@ -85,11 +76,7 @@ public class RequestSender {
 		request.setReturnContentType(MimeMediaType.OBJ);
 		request.setOperation(Operation.RETRIEVE);
 		request.setRequestContentType(MimeMediaType.OBJ);
-<<<<<<< HEAD
 		return ThermosController.CSE.doRequest(request);
-=======
-		return SampleController.CSE.doRequest(request);
->>>>>>> master
 	}
 	
 }
