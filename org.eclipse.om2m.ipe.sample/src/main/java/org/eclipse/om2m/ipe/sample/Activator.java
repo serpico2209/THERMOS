@@ -58,7 +58,7 @@ public class Activator implements BundleActivator {
                         try {
                         	LifeCycleManager.start();
                         } catch (Exception e) {
-                            logger.error("IpeMonitor Sample error", e);
+                            logger.error("IpeMonitor error", e);
                         }
                     }
                 }.start();

@@ -62,19 +62,27 @@ public class ThermosController {
 	
 	public static void regulTemperature(){
 		if(ThermosModel.isSystemActivate() && !ThermosModel.isWindowOpen()){
+			// TI
 			int locTempInterne = ThermosModel.getTemperatureInterne();
+			// TE
 			int locTempExterne = ThermosModel.getTemperatureExterne();
+			// TC
 			int locTempConsigne = ThermosModel.getTempconsigne();
+			// TE + Coef(TC - TE)
 			double locCoefUserTempExterne = locTempExterne +(ThermosModel.getCoefUser()*(locTempConsigne-locTempExterne));
 			double locDegreTolere = ThermosModel.getIntervalleTolerance();
 			
+			// TI > TE
 			if(locTempInterne>locTempExterne){
 				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Off);
+				// TE + Coef(TC - TE) > TI > TE 
 			}else if(locTempInterne>locTempExterne && locCoefUserTempExterne>locTempInterne){
 				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Strong);
-			}else if(locTempInterne>locCoefUserTempExterne && (locTempConsigne+locDegreTolere)>locTempInterne){
+				// TC - Delta > TI > TE + Coef(TC - TE)
+			}else if(locTempInterne>locCoefUserTempExterne && (locTempConsigne-locDegreTolere)>locTempInterne){
 				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Low);
-			}else if(locTempInterne>(locTempConsigne+locDegreTolere) && locTempConsigne>locTempInterne){
+				// TC > TI > TC - Delta
+			}else if(locTempInterne>(locTempConsigne-locDegreTolere) && locTempConsigne>locTempInterne){
 				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Off);
 			}
 		}
