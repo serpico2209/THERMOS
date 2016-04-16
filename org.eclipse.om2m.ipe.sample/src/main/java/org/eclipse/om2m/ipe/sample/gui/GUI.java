@@ -1,12 +1,11 @@
 package org.eclipse.om2m.ipe.sample.gui;
 
-import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -14,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,13 +32,9 @@ public class GUI extends JFrame {
 	static ImageIcon houseRadiatorOff = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/Piece_Chauff_Eteint.png"));
 	static ImageIcon houseRadiatorLow = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/Piece_Chauff_Faible.png"));
 	static ImageIcon houseRadiatorStrong = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/Piece_Chauff_Fort.png"));
-	//static ImageIcon houseWindowOpen = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/Piece_Fen_Ouverte.png"));
+	static ImageIcon houseWindowOpen = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/Piece_Fenetre_Ouverte.png"));
     
 	private JPanel contentPanel = new JPanel();
-	private JPanel statePanel = new JPanel();
-	private JPanel userPanel = new JPanel();
-	private JPanel paramPanel = new JPanel();
-	private JPanel housePanel = new JPanel();
 		                
     static JLabel LABEL_RADIATOR = new JLabel("Radiator");
     static JLabel LABEL_WINDOW = new JLabel("Window");
@@ -101,65 +97,87 @@ public class GUI extends JFrame {
 		        		   
 		        this.setTitle("Thermos");
 		        this.setSize(1000, 800);
+		        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		        this.setLocationRelativeTo(null);
 		        
-		        statePanel.setLayout(new BoxLayout(statePanel, BoxLayout.PAGE_AXIS));
-		        statePanel.add(LABEL_STATE);
-		        statePanel.add(LABEL_THERMOMETER_EXT);
-		        JPanel tempExtPanel = new JPanel();
-		        tempExtPanel.setLayout(new BoxLayout(tempExtPanel, BoxLayout.LINE_AXIS));
-		        tempExtPanel.add(tempExtField);
-		        tempExtPanel.add(incTempExtButton);
+		        //contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.PAGE_AXIS));
+		        contentPanel.setLayout(new GridBagLayout());
+		        GridBagConstraints gbc = new GridBagConstraints();
+		        gbc.fill = GridBagConstraints.BOTH;
+		        gbc.gridwidth = 3;
+		        gbc.gridheight = 1;
+		        gbc.weightx = 1;
+		        gbc.weighty = 1;
+		        gbc.gridx = 0;
+		        gbc.gridy = 0;
+		        contentPanel.add(LABEL_STATE, gbc);
+		        LABEL_STATE.setHorizontalAlignment(SwingConstants.CENTER);
+		        gbc.gridy = 1;
+		        contentPanel.add(LABEL_THERMOMETER_EXT, gbc);
+		        LABEL_THERMOMETER_EXT.setHorizontalAlignment(SwingConstants.LEFT);
+		        gbc.gridy = 2;
+		        contentPanel.add(tempExtField, gbc);
+		        gbc.gridx = 1;
+		        contentPanel.add(incTempExtButton, gbc);
 		        incTempExtButton.addActionListener(new TempExtModification());
-		        tempExtPanel.add(decTempExtButton);
+		        gbc.gridx = 2;
+		        contentPanel.add(decTempExtButton, gbc);
 		        decTempExtButton.addActionListener(new TempExtModification());
-		        statePanel.add(tempExtPanel);
-		        statePanel.add(LABEL_THERMOMETER_INT);
-		        JPanel tempIntPanel = new JPanel();
-		        tempIntPanel.setLayout(new BoxLayout(tempIntPanel, BoxLayout.LINE_AXIS));
-		        tempIntPanel.add(tempIntField);
-		        tempIntPanel.add(incTempIntButton);
+		        gbc.gridx = 0;
+		        gbc.gridy = 3;
+		        contentPanel.add(LABEL_THERMOMETER_INT, gbc);
+		        gbc.gridy = 4;
+		        contentPanel.add(tempIntField, gbc);
+		        gbc.gridx = 1;
+		        contentPanel.add(incTempIntButton, gbc);
 		        incTempIntButton.addActionListener(new TempIntModification());
-		        tempIntPanel.add(decTempIntButton);
+		        gbc.gridx = 2;
+		        contentPanel.add(decTempIntButton, gbc);
 		        decTempIntButton.addActionListener(new TempIntModification());
-		        statePanel.add(tempIntPanel);
-		        statePanel.add(LABEL_WINDOW);
-		        statePanel.add(windowStateBox);
-		        statePanel.add(LABEL_RADIATOR);
-		        statePanel.add(radiatorStateBox);
-		        statePanel.setAlignmentX(LEFT_ALIGNMENT);
+		        gbc.gridy = 5;
+		        contentPanel.add(LABEL_WINDOW, gbc);
+		        LABEL_WINDOW.setHorizontalAlignment(SwingConstants.LEFT);
+		        gbc.gridy = 6;
+		        contentPanel.add(windowStateBox, gbc);
+		        windowStateBox.addActionListener(new WindowStateModification());
+		        gbc.gridy = 7;
+		        contentPanel.add(LABEL_RADIATOR, gbc);
+		        LABEL_RADIATOR.setHorizontalAlignment(SwingConstants.LEFT);
+		        gbc.gridy = 8;
+		        contentPanel.add(radiatorStateBox, gbc);
+		        radiatorStateBox.addActionListener(new RadiatorStateModification());
 
-		        userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.PAGE_AXIS));
-		        userPanel.add(LABEL_USER);
-		        userPanel.add(LABEL_SYSTEM);
-		        userPanel.add(systemStateBox);
-		        
-		        userPanel.add(LABEL_USERPROFILE);
-		        userPanel.add(userProfileBox);
-		        userPanel.add(LABEL_SETPOINT);
-		        JPanel setPointPanel = new JPanel();
-		        setPointPanel.add(setPointField);
-		        setPointPanel.add(incSetPointButton);
+		        gbc.gridy = 9;
+		        contentPanel.add(LABEL_USER, gbc);
+		        LABEL_USER.setHorizontalAlignment(SwingConstants.CENTER);
+		        gbc.gridy = 10;
+		        contentPanel.add(LABEL_SYSTEM, gbc);
+		        LABEL_SYSTEM.setHorizontalAlignment(SwingConstants.LEFT);
+		        gbc.gridy = 11;
+		        contentPanel.add(systemStateBox, gbc);
+		        gbc.gridy = 12;
+		        contentPanel.add(LABEL_USERPROFILE, gbc);
+		        LABEL_USERPROFILE.setHorizontalAlignment(SwingConstants.LEFT);
+		        gbc.gridy = 13;
+		        contentPanel.add(userProfileBox, gbc);
+		        userProfileBox.addActionListener(new UserProfileModification());
+		        gbc.gridy = 14;
+		        contentPanel.add(LABEL_SETPOINT, gbc);
+		        LABEL_SETPOINT.setHorizontalAlignment(SwingConstants.LEFT);
+		        gbc.gridy = 15;
+		        contentPanel.add(setPointField, gbc);
+		        gbc.gridx = 1;
+		        contentPanel.add(incSetPointButton, gbc);
 		        incSetPointButton.addActionListener(new SetPointModification());
-		        setPointPanel.add(decSetPointButton);
+		        gbc.gridx = 2;
+		        contentPanel.add(decSetPointButton, gbc);
 		        decSetPointButton.addActionListener(new SetPointModification());
-		        userPanel.add(setPointPanel);
-		        userPanel.setAlignmentX(LEFT_ALIGNMENT);
 		        
-		        
-		   
-		        paramPanel.setLayout(new BoxLayout(paramPanel, BoxLayout.PAGE_AXIS));
-		        paramPanel.add(statePanel);
-		        paramPanel.add(userPanel);
-		        
-		        housePanel.add(houseState);
-		        housePanel.setAlignmentX(RIGHT_ALIGNMENT);
-
-		        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.LINE_AXIS));
-		        contentPanel.add(paramPanel);
-				contentPanel.add(housePanel);
-		        contentPanel.setBackground(Color.WHITE);
+		        gbc.gridx = 5;
+		        gbc.gridy = 0;
+		        gbc.gridheight = 15;
+		        contentPanel.add(houseState, gbc);
 		        
 		        this.setContentPane(contentPanel);
 		        this.setVisible(true);
@@ -230,11 +248,50 @@ public class GUI extends JFrame {
 		                    }
 		                }.start();
 		    	}
-		    }                                                                   
+		    }    
+		    
+		    class WindowStateModification implements ActionListener {
+				ConnectedState state;
+				public void actionPerformed(ActionEvent e){
+					if(windowStateBox.getSelectedItem().toString().equals("Open")){
+						state = ConnectedState.Open;
+					}
+					else {
+						state = ConnectedState.Closed;
+					}
+					new Thread(){
+	                    public void run() {
+	                    	ThermosController.toggleWindowState(ThermosConstants.WINDOW_1, state);
+	                    }
+	                }.start();
+	                HouseModification();
+				}
+			}
+			
+			class RadiatorStateModification implements ActionListener {
+				ConnectedState state;
+				public void actionPerformed(ActionEvent e){
+					if(radiatorStateBox.getSelectedItem().toString().equals("Off")){
+						state = ConnectedState.Off;
+					}
+					else if (radiatorStateBox.getSelectedItem().toString().equals("Low")) {
+						state = ConnectedState.Low;
+					}
+					else {
+						state = ConnectedState.Strong;
+					}
+					new Thread(){
+	                    public void run() {
+	                    	ThermosController.toggleRadiatorState(ThermosConstants.RADIATOR_1, state);
+	                    }
+	                }.start();
+	                HouseModification();
+				}
+			}
 		    
 		    public static void HouseModification (){
 		    	if (windowStateBox.getSelectedItem().toString().equals("Open")){
-		    		//houseState.setIcon(houseWindowOpen);
+		    		houseState.setIcon(houseWindowOpen);
 		    	} else
 		    		if(radiatorStateBox.getSelectedItem().toString().equals("Off")) {
 		    			houseState.setIcon(houseRadiatorOff);
