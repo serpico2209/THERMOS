@@ -85,14 +85,15 @@ public class GUI extends JFrame {
 					@Override
 					public void onConnectedStateChange(String connectedId, ConnectedState state) {
 						//setLabelConnected(connectedId, state);
+						HouseModification(connectedId, state);
 					}
 				};
 
 		        ThermosModel.addObserver(connectedObserver);
 		        
 		        /*
-		         * Positionnement des différents composants du système dans un groupLayout :
-		         * Radiator, Window , et thermomètre
+		         * Positionnement des diffï¿½rents composants du systï¿½me dans un groupLayout :
+		         * Radiator, Window , et thermomï¿½tre
 		         */
 		        		   
 		        this.setTitle("Thermos");
@@ -264,7 +265,7 @@ public class GUI extends JFrame {
 	                    	ThermosController.toggleWindowState(ThermosConstants.WINDOW_1, state);
 	                    }
 	                }.start();
-	                HouseModification();
+	                //HouseModification();
 				}
 			}
 			
@@ -285,23 +286,25 @@ public class GUI extends JFrame {
 	                    	ThermosController.toggleRadiatorState(ThermosConstants.RADIATOR_1, state);
 	                    }
 	                }.start();
-	                HouseModification();
+	                //HouseModification();
 				}
 			}
 		    
-		    public static void HouseModification (){
-		    	if (windowStateBox.getSelectedItem().toString().equals("Open")){
+		    public static void HouseModification (String connectedId, ConnectedState newState){
+		    	/*if (windowStateBox.getSelectedItem().toString().equals("Open")){
 		    		houseState.setIcon(houseWindowOpen);
-		    	} else
-		    		if(radiatorStateBox.getSelectedItem().toString().equals("Off")) {
+		    	} else*/
+		    	if (connectedId.contains("Radiator")) {
+		    		if(newState == ConnectedState.Off) {
 		    			houseState.setIcon(houseRadiatorOff);
 		    		} 
-		    		else if (radiatorStateBox.getSelectedItem().toString().equals("Low")) {
+		    		else if(newState == ConnectedState.Low) {
 		    			houseState.setIcon(houseRadiatorLow);
 		    		} 
-		    		else if (radiatorStateBox.getSelectedItem().toString().equals("Strong")) {
+		    		 else if(newState == ConnectedState.Strong) {
 		    			houseState.setIcon(houseRadiatorStrong);
 		    		}
+		    	}	    		
 		    }
 		  
 			/**
