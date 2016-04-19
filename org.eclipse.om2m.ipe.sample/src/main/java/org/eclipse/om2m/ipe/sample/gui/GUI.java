@@ -104,7 +104,7 @@ public class GUI extends JFrame {
 		        //contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.PAGE_AXIS));
 		        contentPanel.setLayout(new GridBagLayout());
 		        GridBagConstraints gbc = new GridBagConstraints();
-		        gbc.fill = GridBagConstraints.BOTH;
+		        //gbc.fill = GridBagConstraints.BOTH;
 		        gbc.gridwidth = 3;
 		        gbc.gridheight = 1;
 		        gbc.weightx = 1;
