@@ -105,10 +105,10 @@ public class GUI extends JFrame {
 		        //contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.PAGE_AXIS));
 		        contentPanel.setLayout(new GridBagLayout());
 		        GridBagConstraints gbc = new GridBagConstraints();
-		        gbc.fill = GridBagConstraints.BOTH;
-		        gbc.gridwidth = 3;
+		        gbc.fill = GridBagConstraints.HORIZONTAL;
+		        gbc.gridwidth = 1;
 		        gbc.gridheight = 1;
-		        gbc.weightx = 1;
+		        gbc.weightx = 4;
 		        gbc.weighty = 1;
 		        gbc.gridx = 0;
 		        gbc.gridy = 0;
@@ -118,8 +118,10 @@ public class GUI extends JFrame {
 		        contentPanel.add(LABEL_THERMOMETER_EXT, gbc);
 		        LABEL_THERMOMETER_EXT.setHorizontalAlignment(SwingConstants.LEFT);
 		        gbc.gridy = 2;
+		        gbc.weightx = 2;
 		        contentPanel.add(tempExtField, gbc);
 		        gbc.gridx = 1;
+		        gbc.weightx = 1;
 		        contentPanel.add(incTempExtButton, gbc);
 		        incTempExtButton.addActionListener(new TempExtModification());
 		        gbc.gridx = 2;
@@ -127,16 +129,21 @@ public class GUI extends JFrame {
 		        decTempExtButton.addActionListener(new TempExtModification());
 		        gbc.gridx = 0;
 		        gbc.gridy = 3;
+		        gbc.weightx = 4;
 		        contentPanel.add(LABEL_THERMOMETER_INT, gbc);
 		        gbc.gridy = 4;
+		        gbc.weightx = 2;
 		        contentPanel.add(tempIntField, gbc);
 		        gbc.gridx = 1;
+		        gbc.weightx = 1;
 		        contentPanel.add(incTempIntButton, gbc);
 		        incTempIntButton.addActionListener(new TempIntModification());
 		        gbc.gridx = 2;
 		        contentPanel.add(decTempIntButton, gbc);
 		        decTempIntButton.addActionListener(new TempIntModification());
+		        gbc.gridx = 0;
 		        gbc.gridy = 5;
+		        gbc.weightx = 4;
 		        contentPanel.add(LABEL_WINDOW, gbc);
 		        LABEL_WINDOW.setHorizontalAlignment(SwingConstants.LEFT);
 		        gbc.gridy = 6;
@@ -167,8 +174,10 @@ public class GUI extends JFrame {
 		        contentPanel.add(LABEL_SETPOINT, gbc);
 		        LABEL_SETPOINT.setHorizontalAlignment(SwingConstants.LEFT);
 		        gbc.gridy = 15;
+		        gbc.weightx = 2;
 		        contentPanel.add(setPointField, gbc);
 		        gbc.gridx = 1;
+		        gbc.weightx = 1;
 		        contentPanel.add(incSetPointButton, gbc);
 		        incSetPointButton.addActionListener(new SetPointModification());
 		        gbc.gridx = 2;
@@ -177,7 +186,8 @@ public class GUI extends JFrame {
 		        
 		        gbc.gridx = 5;
 		        gbc.gridy = 0;
-		        gbc.gridheight = 15;
+		        gbc.gridwidth = GridBagConstraints.REMAINDER;
+		        gbc.gridheight = GridBagConstraints.REMAINDER;
 		        contentPanel.add(houseState, gbc);
 		        
 		        this.setContentPane(contentPanel);
@@ -235,6 +245,7 @@ public class GUI extends JFrame {
 	                }.start();
 		    	}
 		    }
+		    
 		    class SetPointModification implements ActionListener{
 		    	public void actionPerformed(ActionEvent e) {
 		    		if(e.getSource() == incSetPointButton) {                    
@@ -256,9 +267,12 @@ public class GUI extends JFrame {
 				public void actionPerformed(ActionEvent e){
 					if(windowStateBox.getSelectedItem().toString().equals("Open")){
 						state = ConnectedState.Open;
+						windowStateBox.setSelectedIndex(0);
+						houseState.setIcon(houseWindowOpen);
 					}
 					else {
 						state = ConnectedState.Closed;
+						windowStateBox.setSelectedIndex(1);
 					}
 					new Thread(){
 	                    public void run() {
@@ -291,21 +305,22 @@ public class GUI extends JFrame {
 			}
 		    
 		    public static void HouseModification (String connectedId, ConnectedState newState){
-		    	/*if (windowStateBox.getSelectedItem().toString().equals("Open")){
-		    		houseState.setIcon(houseWindowOpen);
-		    	} else*/
-		    	if (connectedId.contains("Radiator")) {
-		    		if(newState == ConnectedState.Off) {
-		    			houseState.setIcon(houseRadiatorOff);
-		    		} 
-		    		else if(newState == ConnectedState.Low) {
-		    			houseState.setIcon(houseRadiatorLow);
-		    		} 
-		    		 else if(newState == ConnectedState.Strong) {
-		    			houseState.setIcon(houseRadiatorStrong);
-		    		}
-		    	}	    		
-		    }
+	    		if (connectedId.contains("Radiator")) {
+			    	if(newState == ConnectedState.Off) {
+			    		houseState.setIcon(houseRadiatorOff);
+			    		radiatorStateBox.setSelectedIndex(0);
+			    	} 
+			    	else if(newState == ConnectedState.Low) {
+			    		houseState.setIcon(houseRadiatorLow);
+			    		radiatorStateBox.setSelectedIndex(1);
+			    	} 
+			    	else if(newState == ConnectedState.Strong) {
+			    		houseState.setIcon(houseRadiatorStrong);
+			    		radiatorStateBox.setSelectedIndex(2);
+			    	}
+		    	}
+		    }	   
+		    	
 		  
 			/**
 			* Initiate The GUI.
