@@ -64,7 +64,7 @@ public class LifeCycleManager {
 		createConnectedResources(thermometerExtId, ConnectedState.Outside, ThermosConstants.POA);
 		
 		ThermosModel.setModel(connected);
-		ThermosModel.setStatesystem(true);
+		ThermosModel.setStatesystem(ConnectedState.Activated);
 		ThermosModel.setProfiluser(ConnectedState.Eco);
 
 		createConnectedAll(ThermosConstants.POA);			

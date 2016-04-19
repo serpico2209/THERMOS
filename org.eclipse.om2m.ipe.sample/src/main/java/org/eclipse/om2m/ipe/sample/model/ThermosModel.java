@@ -13,7 +13,7 @@ public class ThermosModel {
 
 	//Paramètres liés au statut du système de régulation de température
 	private static int tempConsigne = 27;
-	private static boolean stateSystem = true;
+	private static ConnectedState stateSystem = ConnectedState.Activated;
 	private static ConnectedState profilUser= ConnectedState.Eco;
 	
 	private static Map<String,Connected> CONNECTED = new HashMap<String, Connected>();
@@ -50,19 +50,19 @@ public class ThermosModel {
 	 * @param connectedId Id de la ressource
 	 * @param state nouvelle état voulu
 	 */
-	public static void setConnectedState(final String connectedId, ConnectedState state) {
+	public static void setConnectedState(final String connectedId, ConnectedState state,boolean isManual) {
 		checkConnectedIdValue(connectedId);
 		CONNECTED.get(connectedId).setState(state);
 
-		//Condition � changer :
-		if(connectedId.contains("Radiator")) notifyObservers(connectedId, state);									
+		//Condition � changer :
+		if(connectedId.contains("Radiator")&& !isManual) notifyObservers(connectedId, state);									
 	}
 	
 	public static double getCoefUser(){
 		if(profilUser.equals(ConnectedState.Eco))
-			return (1/3);
+			return ((double)1/(double)3);
 		else 
-			return (2/3);
+			return ((double)2/(double)3);
 	}
 	
 	public static double getIntervalleTolerance(){
@@ -125,7 +125,7 @@ public class ThermosModel {
 	 * @return the statesystem
 	 */
 	public static boolean isSystemActivate() {
-		return stateSystem;
+		return stateSystem.equals(ConnectedState.Activated);
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class ThermosModel {
 	/**
 	 * @param statesystem the statesystem to set
 	 */
-	public static void setStatesystem(boolean statesystem) {
+	public static void setStatesystem(ConnectedState statesystem) {
 		stateSystem = statesystem;
 	}
 
@@ -157,7 +157,7 @@ public class ThermosModel {
 	}
 	
 	/**
-	 * @return indique si la fen�tre est ouverte
+	 * @return indique si la fen�tre est ouverte
 	 */
 	public static boolean isWindowOpen(){
 		if((getConnectedState(ThermosConstants.WINDOW_1).equals(ConnectedState.Open))) 

@@ -1,11 +1,14 @@
 package org.eclipse.om2m.ipe.sample.controller;
 
 import org.eclipse.om2m.core.service.CseService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.om2m.commons.constants.MimeMediaType;
 import org.eclipse.om2m.commons.resource.ContentInstance;
 import org.eclipse.om2m.core.service.CseService;
 import org.eclipse.om2m.ipe.sample.RequestSender;
 import org.eclipse.om2m.ipe.sample.constants.ThermosConstants;
+import org.eclipse.om2m.ipe.sample.gui.GUI;
 import org.eclipse.om2m.ipe.sample.model.*;
 import org.eclipse.om2m.ipe.sample.util.ObixUtil;
 
@@ -13,36 +16,48 @@ public class ThermosController {
 
 	public static CseService CSE;
 	protected static String AE_ID;
+    static Log LOGGER = LogFactory.getLog(ThermosController.class);
+
 	
 	/*
 	 * Création de la requete et set du changement d'état au Model
 	 * @param connectedId Id de la ressource
 	 * @param state etat de la ressource
 	 */
-	public static void setConnectedState(String connectedId, ConnectedState state){
+	public static void setConnectedState(String connectedId, ConnectedState state,boolean isManual){
 		// Set the value in the "real world" model
-		ThermosModel.setConnectedState(connectedId, state);
+		ThermosModel.setConnectedState(connectedId,state,isManual);
+		LOGGER.info("£££££££££££££££££££££");
+		LOGGER.info(" ConnectedState radiateur " +state.toString());
 		// Send the information to the CSE
-		String targetID = ThermosConstants.CSE_PREFIX + "/" + connectedId + "/" + ThermosConstants.DATA;
+		/*String targetID = ThermosConstants.CSE_PREFIX + "/" + connectedId + "/" + ThermosConstants.DATA;
 		ContentInstance cin = new ContentInstance();
 		cin.setContent(ObixUtil.getStateRep(connectedId, state));
 		cin.setContentInfo(MimeMediaType.OBIX + ":" + MimeMediaType.ENCOD_PLAIN);
-		RequestSender.createContentInstance(targetID, null, cin);
+		RequestSender.createContentInstance(targetID, null, cin);*/
 	}
 	
 	public static ConnectedState getConnectedState(String connectedId){
 		return ThermosModel.getConnectedState(connectedId);
 	}
 	
-	public static void toggleRadiatorState(String connectedId, ConnectedState state,boolean isDur){
-		if(ThermosModel.isSystemActivate() && !ThermosModel.isWindowOpen() &&isDur  ){
-			setConnectedState(connectedId,state);
+	public static void toggleRadiatorState(String connectedId, ConnectedState state,boolean isManual){
+		if(ThermosModel.isSystemActivate() && !ThermosModel.isWindowOpen() ){
+			setConnectedState(connectedId,state,isManual);
 		}
 	}
 	
 	public static void toggleWindowState(String connectedId, ConnectedState state){
-			setConnectedState(connectedId,state);
-			if(state.equals(ConnectedState.Closed)) setConnectedState(ThermosConstants.RADIATOR_1,ConnectedState.Off);
+			setConnectedState(connectedId,state,false);
+			LOGGER.info("µµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµ");
+			LOGGER.info(" ConnectedState Fenetre " +state.toString());
+			if(state.equals(ConnectedState.Open)){
+				setConnectedState(ThermosConstants.RADIATOR_1,ConnectedState.Off,true);
+			}else if(state.equals(ConnectedState.Closed)){
+				LOGGER.info("µµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµ");
+				LOGGER.info(" ConnectedState Fenetre " +state.toString());
+				regulTemperature();
+			}
 	}
 	
 	public static void toggleThermometer(String connectedId, int newTemp){
@@ -60,30 +75,52 @@ public class ThermosController {
 		regulTemperature();
 	}
 	
+	public static void toggleConnectedSystem(ConnectedState state){
+		ThermosModel.setStatesystem(state);
+		if(ThermosModel.isSystemActivate()){
+			regulTemperature();
+		}
+	}
+	
 	public static void regulTemperature(){
-		if(ThermosModel.isSystemActivate() && !ThermosModel.isWindowOpen()){
+			if(ThermosModel.isSystemActivate() && !ThermosModel.isWindowOpen()){
 			// TI
 			int locTempInterne = ThermosModel.getTemperatureInterne();
 			// TE
 			int locTempExterne = ThermosModel.getTemperatureExterne();
 			// TC
 			int locTempConsigne = ThermosModel.getTempconsigne();
-			// TE + Coef(TC - TE)
-			double locCoefUserTempExterne = locTempExterne +(ThermosModel.getCoefUser()*(locTempConsigne-locTempExterne));
+			// TE + Coef(TC - TE)	
+			double locCoefUserTempExterne =(double) locTempExterne +(ThermosModel.getCoefUser()* ((double) (locTempConsigne-locTempExterne)));
 			double locDegreTolere = ThermosModel.getIntervalleTolerance();
 			
+			LOGGER.info("$$$$$$$$$$$$$$$$$$$");
+			LOGGER.info(" locTempInterne " +locTempInterne);
+			LOGGER.info(" locTempExterne " +locTempExterne);
+			LOGGER.info(" locTempConsigne " +locTempConsigne);
+			LOGGER.info(" locCoefUserTempExterne " +locCoefUserTempExterne);
+			LOGGER.info(" locDegreTolere " +locDegreTolere);
+			LOGGER.info("$$$$$$$$$$$$$$$$$$$");
+			
 			// TI > TE
-			if(locTempInterne>locTempExterne){
-				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Off,true);
+			if(locTempInterne>locTempConsigne){
+				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Off,false);
+				LOGGER.info(" Choix 1 ");
 				// TE + Coef(TC - TE) > TI > TE 
 			}else if(locTempInterne>locTempExterne && locCoefUserTempExterne>locTempInterne){
-				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Strong,true);
+				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Strong,false);
+				LOGGER.info(" Choix 2 ");
 				// TC - Delta > TI > TE + Coef(TC - TE)
 			}else if(locTempInterne>locCoefUserTempExterne && (locTempConsigne-locDegreTolere)>locTempInterne){
-				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Low,true);
+				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Low,false);
+				LOGGER.info(" Choix 3 ");
 				// TC > TI > TC - Delta
 			}else if(locTempInterne>(locTempConsigne-locDegreTolere) && locTempConsigne>locTempInterne){
-				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Off,true);
+				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Off,false);
+				LOGGER.info(" Choix 4 ");
+			}else {
+				LOGGER.info(" Hypothèse non cité dans le pdf");
+				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Off,false);
 			}
 		}
 	}

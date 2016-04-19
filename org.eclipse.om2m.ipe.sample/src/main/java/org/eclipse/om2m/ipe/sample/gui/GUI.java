@@ -32,7 +32,7 @@ public class GUI extends JFrame {
 	static ImageIcon houseRadiatorOff = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/Piece_Chauff_Eteint.png"));
 	static ImageIcon houseRadiatorLow = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/Piece_Chauff_Faible.png"));
 	static ImageIcon houseRadiatorStrong = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/Piece_Chauff_Fort.png"));
-	static ImageIcon houseWindowOpen = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/Piece_Fenetre_Ouverte.png"));
+	static ImageIcon houseWindowOpen = new ImageIcon(FrameworkUtil.getBundle(GUI.class).getResource("images/Piece_Fen_ouverte.png"));
     
 	private JPanel contentPanel = new JPanel();
 		                
@@ -62,6 +62,8 @@ public class GUI extends JFrame {
     static int setPoint = 27;
     static int tempInt = 27;
     static int tempExt = 27;
+    static int compteur = 0;
+    private static boolean isManual =true;
     
     static String[] profiles = {"Eco", "Confort"};
     static JComboBox<String> userProfileBox = new JComboBox<String>(profiles);
@@ -148,6 +150,7 @@ public class GUI extends JFrame {
 		        LABEL_WINDOW.setHorizontalAlignment(SwingConstants.LEFT);
 		        gbc.gridy = 6;
 		        contentPanel.add(windowStateBox, gbc);
+		        windowStateBox.setSelectedIndex(1);
 		        windowStateBox.addActionListener(new WindowStateModification());
 		        gbc.gridy = 7;
 		        contentPanel.add(LABEL_RADIATOR, gbc);
@@ -183,6 +186,7 @@ public class GUI extends JFrame {
 		        gbc.gridx = 2;
 		        contentPanel.add(decSetPointButton, gbc);
 		        decSetPointButton.addActionListener(new SetPointModification());
+		        systemStateBox.addActionListener(new SetModificationSystem());
 		        
 		        gbc.gridx = 5;
 		        gbc.gridy = 0;
@@ -198,6 +202,22 @@ public class GUI extends JFrame {
 		        tempIntField.setText(String.valueOf(tempInt));
 		    }                       
 
+		class SetModificationSystem implements ActionListener {
+			ConnectedState state;
+			public void actionPerformed(ActionEvent e){
+				if(systemStateBox.getSelectedItem().toString().equals("Activated")){
+					state = ConnectedState.Activated;
+				}
+				else if(systemStateBox.getSelectedItem().toString().equals("Disabled")){
+					state = ConnectedState.Disabled;
+				}
+				new Thread(){
+                    public void run() {
+                    	ThermosController.toggleConnectedSystem(state);
+                    }
+                }.start();
+			}
+		}
 			
 			class UserProfileModification implements ActionListener {
 				ConnectedState state;
@@ -240,8 +260,6 @@ public class GUI extends JFrame {
 			        } else if(e.getSource() == decTempExtButton){
 		            	tempExtField.setText(String.valueOf(--tempExt));
 			        }
-		    		LOGGER.info("*******************************");
-		    		LOGGER.info(""+tempExt);
 
 			        new Thread(){
 	                    public void run() {
@@ -292,41 +310,36 @@ public class GUI extends JFrame {
 					if(radiatorStateBox.getSelectedItem().toString().equals("Off")){
 						state = ConnectedState.Off;
 			    		houseState.setIcon(houseRadiatorOff);
-						LOGGER.info("======================================================");
-				    	LOGGER.info("radiateur Modification Off");
 					}
 					else if (radiatorStateBox.getSelectedItem().toString().equals("Low")) {
 						state = ConnectedState.Low;
 			    		houseState.setIcon(houseRadiatorLow);
-						LOGGER.info("======================================================");
-				    	LOGGER.info("radiateur Modification Low");
 					}
 					else if(radiatorStateBox.getSelectedItem().toString().equals("Strong"))  {
 						state = ConnectedState.Strong;
 			    		houseState.setIcon(houseRadiatorStrong);
-						LOGGER.info("======================================================");
-				    	LOGGER.info("radiateur Modification Strong");
 					}
 					new Thread(){
 	                    public void run() {
-	                    	ThermosController.toggleRadiatorState(ThermosConstants.RADIATOR_1, state,false);
+	                    	ThermosController.toggleRadiatorState(ThermosConstants.RADIATOR_1, state,isManual);
 	                    }
 	                }.start();
+	                isManual=true;
 	                //HouseModification();
 				}
 			}
 		    
 		    public static void HouseModification (String connectedId, ConnectedState newState){
-		    	LOGGER.info("======================================================");
-		    	LOGGER.info("House Modification");
-				boolean etat=false;
-			    	if(newState == ConnectedState.Off) {
+		    	LOGGER.info("*********************************************************************");
+		    	LOGGER.info("House Modification  " + (compteur++) +" " + newState.toString());
+		    	isManual=false;
+			    	if(newState.equals(ConnectedState.Off)) {
 			    		radiatorStateBox.setSelectedIndex(0);
 			    	} 
-			    	else if(newState == ConnectedState.Low) {
+			    	else if(newState.equals(ConnectedState.Low)) {
 			    		radiatorStateBox.setSelectedIndex(1);
 			    	} 
-			    	else if(newState == ConnectedState.Strong) {
+			    	else if(newState.equals(ConnectedState.Strong)) {
 			    		radiatorStateBox.setSelectedIndex(2);
 			    	}
 		    }	   
