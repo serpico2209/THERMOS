@@ -7,7 +7,7 @@ public class Window extends Connected{
     
     public Window(String WindowId){
     	super(WindowId);
-    	this.connectedState = ConnectedState.Closed;
+    	this.connectedState = ConnectedState.Open;
     }
     
     @Override

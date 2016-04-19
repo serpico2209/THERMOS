@@ -29,31 +29,31 @@ public class ThermosRouter implements InterworkingService{
 			LOGGER.info("Received request in Sample IPE: op=" + operation + " ; connectedid=" + connectedId);
 			switch(op){
 			case SET_STRONG:
-				ThermosController.setConnectedState(connectedId, ConnectedState.Strong);
+				ThermosController.setConnectedState(connectedId, ConnectedState.Strong,false);
 				response.setResponseStatusCode(ResponseStatusCode.OK);
 				break;
 			case SET_OFF:
-				ThermosController.setConnectedState(connectedId, ConnectedState.Off);
+				ThermosController.setConnectedState(connectedId, ConnectedState.Off,false);
 				response.setResponseStatusCode(ResponseStatusCode.OK);
 				break;
 			case SET_LOW:
-				ThermosController.setConnectedState(connectedId, ConnectedState.Low);
+				ThermosController.setConnectedState(connectedId, ConnectedState.Low,false);
 				response.setResponseStatusCode(ResponseStatusCode.OK);
 				break;
 			case OPEN:
-				ThermosController.setConnectedState(connectedId, ConnectedState.Open);
+				ThermosController.setConnectedState(connectedId, ConnectedState.Open,false);
 				response.setResponseStatusCode(ResponseStatusCode.OK);
 				break;
 			case CLOSE:
-				ThermosController.setConnectedState(connectedId, ConnectedState.Closed);
+				ThermosController.setConnectedState(connectedId, ConnectedState.Closed,false);
 				response.setResponseStatusCode(ResponseStatusCode.OK);
 				break;
 			case SET_INSIDE:
-				ThermosController.setConnectedState(connectedId, ConnectedState.Inside);
+				ThermosController.setConnectedState(connectedId, ConnectedState.Inside,false);
             	response.setResponseStatusCode(ResponseStatusCode.OK);
             	break;
 			case SET_OUTSIDE:
-				ThermosController.setConnectedState(connectedId, ConnectedState.Outside);
+				ThermosController.setConnectedState(connectedId, ConnectedState.Outside,false);
             	response.setResponseStatusCode(ResponseStatusCode.OK);
             	break;
 			case ACTIVATE:
