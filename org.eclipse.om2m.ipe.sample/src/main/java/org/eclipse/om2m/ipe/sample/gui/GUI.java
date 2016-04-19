@@ -222,6 +222,8 @@ public class GUI extends JFrame {
 			        	 tempIntField.setText(String.valueOf(++tempInt));
 			         }else if(e.getSource() == decTempIntButton){
 			        	 tempIntField.setText(String.valueOf(--tempInt));
+			         }else {
+			        	// tempIntField.
 			         }
 			         new Thread(){
 		                    public void run() {
@@ -238,6 +240,9 @@ public class GUI extends JFrame {
 			        } else if(e.getSource() == decTempExtButton){
 		            	tempExtField.setText(String.valueOf(--tempExt));
 			        }
+		    		LOGGER.info("*******************************");
+		    		LOGGER.info(""+tempExt);
+
 			        new Thread(){
 	                    public void run() {
 	    		        	ThermosController.toggleThermometer(ThermosConstants.THERMOMETER_EXT, tempExt);
@@ -267,12 +272,10 @@ public class GUI extends JFrame {
 				public void actionPerformed(ActionEvent e){
 					if(windowStateBox.getSelectedItem().toString().equals("Open")){
 						state = ConnectedState.Open;
-						windowStateBox.setSelectedIndex(0);
 						houseState.setIcon(houseWindowOpen);
 					}
-					else {
+					else if( windowStateBox.getSelectedItem().toString().equals("Closed")){
 						state = ConnectedState.Closed;
-						windowStateBox.setSelectedIndex(1);
 					}
 					new Thread(){
 	                    public void run() {
@@ -288,16 +291,25 @@ public class GUI extends JFrame {
 				public void actionPerformed(ActionEvent e){
 					if(radiatorStateBox.getSelectedItem().toString().equals("Off")){
 						state = ConnectedState.Off;
+			    		houseState.setIcon(houseRadiatorOff);
+						LOGGER.info("======================================================");
+				    	LOGGER.info("radiateur Modification Off");
 					}
 					else if (radiatorStateBox.getSelectedItem().toString().equals("Low")) {
 						state = ConnectedState.Low;
+			    		houseState.setIcon(houseRadiatorLow);
+						LOGGER.info("======================================================");
+				    	LOGGER.info("radiateur Modification Low");
 					}
-					else {
+					else if(radiatorStateBox.getSelectedItem().toString().equals("Strong"))  {
 						state = ConnectedState.Strong;
+			    		houseState.setIcon(houseRadiatorStrong);
+						LOGGER.info("======================================================");
+				    	LOGGER.info("radiateur Modification Strong");
 					}
 					new Thread(){
 	                    public void run() {
-	                    	ThermosController.toggleRadiatorState(ThermosConstants.RADIATOR_1, state);
+	                    	ThermosController.toggleRadiatorState(ThermosConstants.RADIATOR_1, state,false);
 	                    }
 	                }.start();
 	                //HouseModification();
@@ -305,20 +317,18 @@ public class GUI extends JFrame {
 			}
 		    
 		    public static void HouseModification (String connectedId, ConnectedState newState){
-	    		if (connectedId.contains("Radiator")) {
+		    	LOGGER.info("======================================================");
+		    	LOGGER.info("House Modification");
+				boolean etat=false;
 			    	if(newState == ConnectedState.Off) {
-			    		houseState.setIcon(houseRadiatorOff);
 			    		radiatorStateBox.setSelectedIndex(0);
 			    	} 
 			    	else if(newState == ConnectedState.Low) {
-			    		houseState.setIcon(houseRadiatorLow);
 			    		radiatorStateBox.setSelectedIndex(1);
 			    	} 
 			    	else if(newState == ConnectedState.Strong) {
-			    		houseState.setIcon(houseRadiatorStrong);
 			    		radiatorStateBox.setSelectedIndex(2);
 			    	}
-		    	}
 		    }	   
 		    	
 		  
