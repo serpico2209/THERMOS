@@ -73,10 +73,11 @@ public class ThermosController {
 			int locTempInterne = ThermosModel.getTemperatureInterne();
 			int locTempExterne = ThermosModel.getTemperatureExterne();
 			int locTempConsigne = ThermosModel.getTempconsigne();
-			double locCoefUser = ThermosModel.getCoefUser();
+			//double locCoefUser = ThermosModel.getCoefUser();
+			double locCoefUser = 0.33;
 			double locCoefUserTempExterne = (double) locTempExterne +(locCoefUser*((double)(locTempConsigne-locTempExterne)));
-			double locDegreTolere = ThermosModel.getIntervalleTolerance();
-	
+			//double locDegreTolere = ThermosModel.getIntervalleTolerance();
+			double locDegreTolere = 1.5;
 			if(locTempInterne>locTempConsigne){
 				toggleRadiatorState(ThermosConstants.RADIATOR_1,ConnectedState.Off);
 			}else if((locTempInterne>locTempExterne) && (locCoefUserTempExterne>locTempInterne)){

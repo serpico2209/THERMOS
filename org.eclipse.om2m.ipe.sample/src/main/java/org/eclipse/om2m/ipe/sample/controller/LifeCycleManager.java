@@ -33,6 +33,7 @@ import org.eclipse.om2m.commons.resource.ResponsePrimitive;
 import org.eclipse.om2m.ipe.sample.RequestSender;
 import org.eclipse.om2m.ipe.sample.constants.ThermosConstants;
 import org.eclipse.om2m.ipe.sample.gui.GUI;
+import org.eclipse.om2m.ipe.sample.gui.GUI_bis2;
 import org.eclipse.om2m.ipe.sample.model.*;
 import org.eclipse.om2m.ipe.sample.util.ObixUtil;
 

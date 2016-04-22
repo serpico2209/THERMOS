@@ -15,7 +15,7 @@ import org.eclipse.om2m.ipe.sample.constants.ThermosConstants;
 public class ThermosModel {
 
 	//Paramètres liés au statut du système de régulation de température
-	private static int tempConsigne = 27;
+	private static int tempConsigne = 18;
 	private static boolean stateSystem= true;
 	private static ConnectedState profilUser= ConnectedState.Eco;
     private static Log logger = LogFactory.getLog(Activator.class);
