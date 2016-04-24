@@ -242,8 +242,6 @@ public class GUI extends JFrame {
 			        	 tempIntField.setText(String.valueOf(++tempInt));
 			         }else if(e.getSource() == decTempIntButton){
 			        	 tempIntField.setText(String.valueOf(--tempInt));
-			         }else {
-			        	// tempIntField.
 			         }
 			         new Thread(){
 		                    public void run() {
@@ -300,7 +298,6 @@ public class GUI extends JFrame {
 	                    	ThermosController.toggleWindowState(ThermosConstants.WINDOW_1, state);
 	                    }
 	                }.start();
-	                //HouseModification();
 				}
 			}
 			
@@ -325,13 +322,10 @@ public class GUI extends JFrame {
 	                    }
 	                }.start();
 	                isManual=true;
-	                //HouseModification();
 				}
 			}
 		    
 		    public static void HouseModification (String connectedId, ConnectedState newState){
-		    	LOGGER.info("*********************************************************************");
-		    	LOGGER.info("House Modification  " + (compteur++) +" " + newState.toString());
 		    	isManual=false;
 			    	if(newState.equals(ConnectedState.Off)) {
 			    		radiatorStateBox.setSelectedIndex(0);
